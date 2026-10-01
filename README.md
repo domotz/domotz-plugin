@@ -71,3 +71,7 @@ Every playbook follows the same rules ([CONTRIBUTING.md](CONTRIBUTING.md)):
 
 Each playbook is tested on real Domotz data before release, including applying its changes
 and undoing them.
+
+## License
+
+[MIT](LICENSE)
