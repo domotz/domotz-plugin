@@ -40,7 +40,9 @@ this conversation.
 
 ## Step 2 — Fetch
 
-Do these calls, in this order (about 15 calls plus one per key device; stay under 40):
+Do these calls, in this order (about 15 calls plus one per key device; stay under 45). Make the
+per-device calls one at a time, not in parallel; if one fails, retry it once, and report any device
+you still could not read as "not verified" rather than guessing:
 
 1. `collector_overview` — status, version, creation time, uptime, device counters, default SNMP
    credentials (`is_platform_default`), `tcp_open_port_scanner`.
@@ -57,7 +59,8 @@ Do these calls, in this order (about 15 calls plus one per key device; stay unde
 8. `list_alert_rules` — the account's rules (id, name, metric, condition, severity,
    `linked_entities`).
 9. `get_collector_alert_rule_bindings` — rules on the collector itself.
-10. `get_device_alert_rule_bindings` for every **key device** (Step 3), up to 20.
+10. `get_device_alert_rule_bindings` for every **key device** (Step 3): all infrastructure first,
+    then business-critical endpoints, up to 30 devices in total. Say which ones you skipped.
 
 **Is the site settled?** If `initialDiscovery.inProgress` is true, or the collector was created
 less than 30 minutes ago, say so: discovery, device types and topology are still settling, and
@@ -78,8 +81,12 @@ attach nothing. Never assume either: what counts is what the bindings in items 9
 - **business-critical endpoints:** point-of-sale terminals, door/access controllers, and cameras.
   These are proposed separately, because whether they matter is the MSP's call.
 
-Use the topology dependency map: a switch that many devices depend on is key, and say how many
-depend on it.
+Use the topology **edges** to see what depends on what: an edge from a switch (`source_id`) to a
+device (`target_id`) means the device is plugged into that switch, so count the devices behind each
+switch, and follow switch-to-switch edges from the switch the gateway or firewall is on. Don't rely
+on `dependency_map` alone: switches linked to each other appear under each other there, which looks
+like a cycle but is just the two ends of one uplink. A switch that many devices depend on is key;
+say how many depend on it.
 
 ## Step 4 — The checks
 
@@ -99,7 +106,8 @@ question (Q…).
    - No suitable rule exists in the account → T…: "create a 'went down' rule in the Domotz app and
      choose who it notifies" (you cannot see notification channels, so never create rules).
 2. **Importance.** Key infrastructure should be marked important; endpoints that come and go
-   (workstations, phones, laptops, guest devices) should not. Propose the changes as a batch (B…),
+   (workstations, laptops, mobile phones and tablets, guest devices) should not. Desk VoIP phones,
+   printers and displays are the MSP's call: leave their importance as it is unless asked. Propose the changes as a batch (B…),
    infrastructure first. Business-critical endpoints go in their own optional batch.
 3. **Credentials and integrations.** From the credential coverage:
    - switches, firewalls and routers whose `CONFIGURATION_MANAGEMENT` is LOCKED, or whose config
