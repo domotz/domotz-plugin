@@ -27,6 +27,8 @@ this conversation.
    keys. Credential gaps are always an action for the user in the Domotz app.
 4. **One site at a time.** A check-up covers one collector. Never mix two organizations in a batch.
 5. **Say what you covered.** If you skipped devices or could not read something, say exactly what.
+   Write exact counts from the data you read; never "~", "about" or "90+". If you only sampled,
+   say "at least <n>".
 6. Say "collector", not "agent". Name devices and rules by name, with ids in brackets.
 
 ## Step 1 — Scope
