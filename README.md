@@ -12,6 +12,7 @@ connect your assistant to the Domotz MCP server, add the playbook, and ask.
 | Playbook | What you get | Changes it can make |
 |---|---|---|
 | [Alert tune-up](use-cases/alert-tune-up/) | Which alerts are noise, which rules need a better threshold, which are real signal, with evidence and ready-to-approve fixes ([example](use-cases/alert-tune-up/example-report.md)) | Unbind rules, adjust thresholds (only after you approve, all reversible) |
+| [Site check-up](use-cases/site-check-up/) | Is a new (or existing) site ready: what would never alert, what isn't marked important, which credentials and backups are missing, with fixes to approve | Bind "went down" rules, set importance (only after you approve, all reversible) |
 
 More are on the way.
 
@@ -33,7 +34,7 @@ You need a Domotz account and an AI assistant that can use MCP connectors.
 
 **Claude (web and desktop):**
 
-1. Download [**alert-tune-up.zip**](https://github.com/domotz/domotz-ai-playbooks/releases/latest/download/alert-tune-up.zip) from the
+1. Download the playbook's zip, for example [**alert-tune-up.zip**](https://github.com/domotz/domotz-ai-playbooks/releases/latest/download/alert-tune-up.zip) from the
    latest release.
 2. In Claude, open **Customize → Skills**, add a skill, and upload the zip.
 3. Check that the skill is switched on.
