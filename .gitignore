@@ -1,0 +1,7 @@
+# Internal: eval harness, answer keys, drafts and promo material stay local
+evals/
+drafts/
+marketing/
+dist/
+__pycache__/
+.DS_Store

@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alert Tune-Up</title>
+<!--
+  Alert tune-up: visual report template.
+  The assistant copies this file unchanged and replaces ONLY the JSON data block
+  that follows this comment (the script element whose id is "audit").
+  The sample data in it is example data, not a real account.
+-->
+<script id="audit" type="application/json">
+{
+  "client": "Whole account",
+  "from": "2026-09-01",
+  "to": "2026-09-30",
+  "total": 412,
+  "read": 412,
+  "coverage": "complete",
+  "rules_fired": 19,
+  "rules_total": 76,
+  "changes": [
+    {
+      "id": "B1",
+      "change": "Unbind \"errors > 0\" rule from Lobby AP (Client A)",
+      "saved": 118,
+      "est": false,
+      "why": "Fires on any interface error; 116 of 118 cleared in under 5 min"
+    },
+    {
+      "id": "B2",
+      "change": "Unbind Device Status from 6 staff laptops (Client B)",
+      "saved": 64,
+      "est": false,
+      "why": "Laptops leave the network every evening; 58 of 64 fired between 17:30 and 19:30"
+    },
+    {
+      "id": "B3",
+      "change": "Raise branch VPN latency rule 10 → 50 ms (Client C)",
+      "saved": 29,
+      "est": true,
+      "why": "Fired 29 times at only 11–24 ms, which is normal for that link"
+    },
+    {
+      "id": "B4",
+      "change": "Unbind Device Status from 2 printers (Client A)",
+      "saved": 22,
+      "est": false,
+      "why": "The printers drop off when they go to sleep; 20 of 22 cleared in under 5 min"
+    },
+    {
+      "id": "B5",
+      "change": "Unbind \"speed > 1000 b/s\" from Core Switch (Client B)",
+      "saved": 8,
+      "est": false,
+      "why": "Always true on a 1 Gb port; all 8 alerts still open"
+    },
+    {
+      "id": "B6",
+      "change": "Unbind 2 duplicate collector-status rules at Main Office (Client A)",
+      "saved": 6,
+      "est": false,
+      "why": "3 rules fired in the same second for all 3 outages; keeps the Critical one"
+    }
+  ],
+  "leave": [
+    {
+      "id": "L1",
+      "problem": "Cameras behind one Wi-Fi bridge at Warehouse (Client C)",
+      "alerts": 96,
+      "fix": "Loss and latency rules fire at the same moments on 5 cameras; fix the bridge link"
+    },
+    {
+      "id": "L2",
+      "problem": "Collector outages (all sites)",
+      "alerts": 9,
+      "fix": "Real drops; the Branch 2 collector was offline for 6 hours on 18 Sep"
+    },
+    {
+      "id": "L3",
+      "problem": "Firewall WAN failover at Head Office (Client B)",
+      "alerts": 7,
+      "fix": "Real ISP drops; check the primary line with the provider"
+    }
+  ],
+  "also": [
+    "Never-closing backlog: 6 driver failures, 4 WAN changes, 5 new devices discovered",
+    "18 rules are attached to nothing"
+  ],
+  "notes": [
+    "B3: a threshold belongs to the rule, so it also applies to the rule's other device",
+    "B6: check in the app that the Critical rule notifies the right place"
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column, a before/after hero, then two ledgers (changes, leave alone) on one shared scale. */
+:root {
+  --bg: #f3f6f9;
+  --panel: #ffffff;
+  --ink: #1e2935;
+  --muted: #5d6b7a;
+  --line: #dde4ec;
+  --brand: #2a3644;
+  --accent: #1f8ff0;
+  --accent-soft: #d8ebfd;
+  --keep: #c27a10;
+  --keep-soft: #fbeed8;
+  --track: #e8edf2;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151c24; --panel: #1d2631; --ink: #e6edf4; --muted: #9aa8b7; --line: #2d3946;
+    --brand: #0f151c; --accent: #54b2ff; --accent-soft: #1d3a55; --keep: #f0a93d; --keep-soft: #3a2d17;
+    --track: #2a3542; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #151c24; --panel: #1d2631; --ink: #e6edf4; --muted: #9aa8b7; --line: #2d3946;
+  --brand: #0f151c; --accent: #54b2ff; --accent-soft: #1d3a55; --keep: #f0a93d; --keep-soft: #3a2d17;
+  --track: #2a3542; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body); }
+.wrap { max-width: 880px; margin: 0 auto; padding-inline: 16px; padding-block: 0 40px; }
+header.top { background: var(--brand); color: #fff; }
+header.top .wrap { padding-block: 18px; display: flex; flex-wrap: wrap; gap: 6px 20px; align-items: baseline; justify-content: space-between; }
+.eyebrow { font: 600 12px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: #8fc9ff; }
+.scope { font: 400 13px/1.4 var(--mono); color: #c9d4df; }
+h1, h2 { font-family: var(--display); text-wrap: balance; margin: 0; }
+.hero { padding-block: 32px 8px; display: grid; gap: 20px; }
+.hero h1 { font-size: clamp(30px, 6vw, 46px); font-weight: 800; line-height: 1.05; letter-spacing: -.01em; }
+.hero h1 .pct { color: var(--accent); }
+.hero p { margin: 0; color: var(--muted); }
+.ba { display: grid; grid-template-columns: 64px 1fr 56px; gap: 10px 12px; align-items: center; font-variant-numeric: tabular-nums; }
+.ba .lbl { font: 600 12px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.ba .num { font: 500 15px/1 var(--mono); text-align: right; }
+.track { height: 22px; background: var(--track); border-radius: 3px; overflow: hidden; display: flex; }
+.fill { height: 100%; background: var(--accent); }
+.fill.before { background: var(--muted); opacity: .55; }
+.fill.saved { background: repeating-linear-gradient(135deg, var(--accent-soft) 0 6px, transparent 6px 12px); }
+section { margin-top: 32px; }
+.sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-bottom: 2px solid var(--ink); padding-bottom: 8px; }
+.sec-head h2 { font-size: 20px; font-weight: 700; }
+.sec-head span { font: 600 12px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.row { display: grid; grid-template-columns: 44px minmax(0, 1fr) 150px; gap: 4px 14px; padding-block: 14px; border-bottom: 1px solid var(--line); }
+.id { font: 500 13px/1 var(--mono); align-self: start; padding: 5px 0; text-align: center; border-radius: 3px; background: var(--accent-soft); color: var(--ink); }
+.leave .id { background: var(--keep-soft); }
+.what { font-weight: 600; min-width: 0; }
+.why { grid-column: 2; color: var(--muted); font-size: 14px; min-width: 0; }
+.why b { color: var(--ink); font-weight: 500; }
+.metric { grid-column: 3; grid-row: 1 / span 2; display: grid; gap: 6px; align-content: start; font-variant-numeric: tabular-nums; }
+.metric .n { font: 700 22px/1 var(--display); text-align: right; }
+.metric .n small { font: 400 12px var(--body); color: var(--muted); margin-left: 4px; }
+.mini { height: 8px; background: var(--track); border-radius: 2px; overflow: hidden; }
+.mini i { display: block; height: 100%; min-width: 2px; background: var(--accent); }
+.leave .mini i { background: var(--keep); }
+.leave .sec-head { border-color: var(--keep); }
+ul.plain { margin: 12px 0 0; padding-left: 18px; color: var(--muted); }
+ul.plain li + li { margin-top: 4px; }
+.notes { margin-top: 14px; font-size: 14px; }
+.approve { margin-top: 36px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 20px; display: grid; gap: 12px; }
+.approve h2 { font-size: 18px; }
+.replies { display: flex; flex-wrap: wrap; gap: 8px; }
+.replies button { font: 500 14px/1 var(--mono); padding: 10px 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 4px; cursor: pointer; }
+.replies button:hover { border-color: var(--accent); }
+.replies button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.approve p { margin: 0; color: var(--muted); font-size: 14px; }
+footer { margin-top: 24px; font: 400 12px/1.5 var(--mono); color: var(--muted); }
+@media (max-width: 560px) {
+  .row { grid-template-columns: 40px minmax(0, 1fr); }
+  .metric { grid-column: 2; grid-row: auto; grid-template-columns: 1fr auto; align-items: center; }
+  .metric .n { order: 2; }
+  .ba { grid-template-columns: 52px 1fr 48px; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <span class="eyebrow">Alert tune-up</span>
+  <span class="scope" id="scope"></span>
+</div></header>
+<main class="wrap">
+  <div class="hero">
+    <h1 id="headline"></h1>
+    <p id="sub"></p>
+    <div class="ba" role="img" id="ba-label">
+      <span class="lbl">Before</span><div class="track"><div class="fill before" id="bar-before"></div></div><span class="num" id="n-before"></span>
+      <span class="lbl">After</span><div class="track"><div class="fill" id="bar-after"></div><div class="fill saved" id="bar-saved"></div></div><span class="num" id="n-after"></span>
+    </div>
+  </div>
+
+  <section>
+    <div class="sec-head"><h2>Proposed changes</h2><span>Alerts saved</span></div>
+    <div id="changes"></div>
+  </section>
+
+  <section class="leave">
+    <div class="sec-head"><h2>Leave alone: fix the cause</h2><span>Alerts</span></div>
+    <div id="leave"></div>
+  </section>
+
+  <section id="also-sec">
+    <div class="sec-head"><h2>Also found</h2></div>
+    <ul class="plain" id="also"></ul>
+    <ul class="plain notes" id="notes"></ul>
+  </section>
+
+  <div class="approve">
+    <h2>Approve in the chat</h2>
+    <div class="replies" id="replies"></div>
+    <p id="copied">Click a reply to copy it, then paste it into the chat. Nothing changes until you approve, and every change can be undone.</p>
+  </div>
+
+  <footer id="foot"></footer>
+</main>
+<script>
+(function () {
+  var d = JSON.parse(document.getElementById("audit").textContent);
+  var $ = function (id) { return document.getElementById(id); };
+  var el = function (tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  var changes = d.changes || [], leave = d.leave || [];
+  var saved = changes.reduce(function (s, c) { return s + (c.saved || 0); }, 0);
+  var total = d.total || 0, after = Math.max(total - saved, 0);
+  var pct = total ? Math.round(saved / total * 100) : 0;
+  var pctOf = function (n) { return total ? (n / total * 100) + "%" : "0"; };
+
+  $("scope").textContent = d.client + " · " + d.from + " → " + d.to + " (UTC)";
+  $("headline").innerHTML = "";
+  $("headline").append(saved + " fewer alerts ", el("span", "pct", "(−" + pct + "%)"));
+  $("sub").textContent = "If you approve all " + changes.length + " changes. " + total + " alerts fired in this window; " +
+    d.rules_fired + " of " + d.rules_total + " rules fired.";
+  $("bar-before").style.width = "100%";
+  $("bar-after").style.width = pctOf(after);
+  $("bar-saved").style.width = pctOf(saved);
+  $("n-before").textContent = total;
+  $("n-after").textContent = after;
+  $("ba-label").setAttribute("aria-label", "Before: " + total + " alerts. After: " + after + " alerts.");
+
+  function row(item, label, n, est, reason) {
+    var r = el("div", "row");
+    r.append(el("span", "id", item.id), el("div", "what", label));
+    var m = el("div", "metric"), num = el("div", "n", String(n));
+    if (est) num.append(el("small", null, "est."));
+    var bar = el("div", "mini"), fill = el("i"); fill.style.width = pctOf(n); bar.append(fill);
+    m.append(num, bar);
+    r.append(m, el("div", "why", reason));
+    return r;
+  }
+  changes.slice().sort(function (a, b) { return b.saved - a.saved; }).forEach(function (c) {
+    $("changes").append(row(c, c.change, c.saved, c.est, c.why));
+  });
+  leave.forEach(function (l) { $("leave").append(row(l, l.problem, l.alerts, false, l.fix)); });
+  (d.also || []).forEach(function (t) { $("also").append(el("li", null, t)); });
+  (d.notes || []).forEach(function (t) { $("notes").append(el("li", null, t)); });
+  if (!(d.also || []).length && !(d.notes || []).length) $("also-sec").hidden = true;
+
+  var first = changes[0] ? changes[0].id : "B1", second = changes[1] ? changes[1].id : null;
+  ["approve all", "approve " + first + (second ? " " + second : ""), "why " + first + "?"].forEach(function (t) {
+    var b = el("button", null, t); b.type = "button";
+    b.addEventListener("click", function () {
+      var done = function () { $("copied").textContent = "Copied “" + t + "”. Paste it into the chat. Nothing changes until you approve."; };
+      try { navigator.clipboard.writeText(t).then(done, function () { $("copied").textContent = "Type “" + t + "” in the chat."; }); }
+      catch (e) { $("copied").textContent = "Type “" + t + "” in the chat."; }
+    });
+    $("replies").append(b);
+  });
+  $("foot").textContent = "Read from your Domotz account through the Domotz MCP server · " + d.read + " of " + total +
+    " alerts read (" + d.coverage + ") · counts are for " + d.from + " → " + d.to + (changes.some(function (c) { return c.est; }) ? " · est. = estimate at the new threshold" : "");
+})();
+</script>
+</body>
+</html>
