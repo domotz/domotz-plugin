@@ -3,7 +3,7 @@
 Ready-made workflows that let your AI assistant do real network-operations work in your
 Domotz account: read the data, explain what it means, and make the changes you approve.
 
-Built for Claude; other MCP clients can paste the playbook. Each playbook is a single
+Works in Claude and ChatGPT; other MCP clients can paste the playbook. Each playbook is a single
 instruction file (an [Agent Skill](https://agentskills.io)). There is no script to run:
 connect your assistant to the Domotz MCP server, add the playbook, and ask.
 
@@ -25,6 +25,7 @@ You need a Domotz account and an AI assistant that can use MCP connectors.
 ### 1. Connect your assistant to Domotz
 
 [Claude (web and desktop)](connect/claude-ai.md) ·
+[ChatGPT](connect/chatgpt.md) ·
 [Claude Code](connect/claude-code.md) ·
 [Other MCP clients](connect/other-clients.md)
 
@@ -36,6 +37,9 @@ You need a Domotz account and an AI assistant that can use MCP connectors.
    latest release.
 2. In Claude, open **Customize → Skills**, add a skill, and upload the zip.
 3. Check that the skill is switched on.
+
+**ChatGPT:** download the same zip and upload it under **Skills → Add → Upload from your
+computer**.
 
 **Claude Code:** copy the playbook folder into your skills directory:
 

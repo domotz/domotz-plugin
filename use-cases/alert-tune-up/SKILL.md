@@ -128,11 +128,15 @@ you bucket it.
 - the extra copies of a duplicate rule — keep the one with the highest severity, and warn that
   Domotz doesn't show which notification channel each copy uses, so the user should check in the
   app that the one they keep notifies the right place;
-- a meaningless or can-never-clear condition;
+- a meaningless or can-never-clear condition, **on any device, infrastructure included**. A rule
+  such as "errors > 0" or "speed > 1000 b/s" whose alerts mostly clear within 5 minutes is noise
+  even on a switch or access point: unbind it from the noisy device. Say in the Why cell that real
+  interface problems would still show up as the device going down or as packet loss;
 - status alerts on devices from the expected-downtime list, unbound from those devices only.
 
 **Worth re-tuning** (real metric, wrong setting):
-- threshold too tight: propose a new threshold from the values that fired — above most of them,
+- threshold too tight: propose the change (don't defer it to "review first"); put the blast
+  radius in the row and the notes. Propose a new threshold from the values that fired — above most of them,
   rounded to a sensible number, and in line with practice (for example latency on Wi-Fi devices
   is usually alerted at 50–100 ms, not 10 ms). Say how many of this window's alerts would have
   fired at the new threshold (count the fired values above it; say it is an estimate);
@@ -144,8 +148,9 @@ you bucket it.
 
 **Leave alone** (signal, or not fixable by changing alerts):
 - collector outages, and device alerts caused by one;
-- infrastructure going down: routers, firewalls, switches, access points and repeaters, servers,
-  NAS, UPS, controllers;
+- infrastructure going down: status and availability alerts on routers, firewalls, switches,
+  access points and repeaters, servers, NAS, UPS, controllers. This covers the device being
+  down, not every rule attached to it (see "meaningless condition" above);
 - shared-cause site problems: say what to fix (the Wi-Fi link, the power, the collector) instead of
   silencing the symptoms;
 - a device that flaps and matters: name it as a device problem to investigate;
@@ -153,7 +158,9 @@ you bucket it.
   backup failed) — mention the open backlog.
 
 When you are unsure between retire and leave alone, choose leave alone and say what would change
-your mind.
+your mind. "Unsure" means the evidence points both ways, not that a change needs care: a rule
+that matches a retire or re-tune pattern above goes in proposed changes, with its caveat in the
+notes.
 
 ## Step 5 — The report
 
