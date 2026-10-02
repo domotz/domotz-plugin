@@ -227,6 +227,7 @@ Reply **"approve B1 B2"**, **"approve all"**, or **"why B1?"** for the evidence.
 ```
 
 Rules for the layout:
+- In the headline, <n> is the number of proposed batches (B…), not of devices.
 - The headline's main outcome is the most important change, in numbers: "15 key devices alerting,
   up from 0". If nothing needs changing, say the site is ready.
 - **Sort** proposed changes by impact (alerting first, then importance, then the optional ones)
