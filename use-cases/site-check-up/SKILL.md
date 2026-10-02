@@ -256,8 +256,10 @@ Rules for the layout:
 - In the headline, <n> is the number of proposed batches (B…), not of devices.
 - The headline's main outcome is the most important change, in numbers: "15 key devices alerting,
   up from 0". If nothing needs changing, say the site is ready.
-- **Sort** proposed changes by impact (alerting first, then importance, then the optional ones)
-  and number them in that order. List every target in the evidence, not in the table.
+- **Sort** proposed changes: required batches first (alerting, then importance), then every
+  optional batch, and number them in that order.
+- The headline outcome and the visual report's `coverage.after` count only the required
+  batches; optional ones don't change the headline. List every target in the evidence, not in the table.
 - Keep cells short: Change and Action at most 55 characters, Why at most 90.
 - Leave out an empty section ("Proposed changes", "To do", "Questions") instead of writing "none".
 - Keep everything else out of the first reply.
