@@ -24,7 +24,9 @@ this conversation.
    external host or routed network; never apply a device profile (it can overwrite credentials);
    never power-cycle or reboot anything; never snooze; never change a rule's notification channels.
 3. **Never handle secrets.** Do not ask for, accept, repeat or send passwords, SNMP communities or
-   keys. Credential gaps are always an action for the user in the Domotz app.
+   keys, and never call a tool that takes a secret as an argument (such as
+   `set_collector_default_snmp_credentials`). The only exception is a form the user fills in
+   themselves (`get_snmp_credentials_form`, see Step 4), where you never see the values.
 4. **One site at a time.** A check-up covers one collector. Never mix two organizations in a batch.
 5. **Say what you covered.** If you skipped devices or could not read something, say exactly what.
    Write exact counts from the data you read; never "~", "about" or "90+". If you only sampled,
@@ -39,10 +41,23 @@ this conversation.
   installed", take the most recently created collector (`sort_by: creation_time`) and say which.
   If it is still ambiguous, ask once which collector, listing the candidates.
 - State the scope in one line: client, collector name [id], when it was installed, device count.
+- Note the collector's `monitoring_mode` (`search_collectors` with `view: detailed`): "Location
+  Mode" bills per site, any other mode bills per monitored device. It decides check 9.
+
+**What to compare against.** There is no single right configuration: which devices alert and which
+are important is each MSP's own standard. Pick the baseline once and say which one you used:
+- **A reference site.** If the user names one of their established sites ("compare with the Pisa
+  office"), use it as the standard (Step 2b). Read it only; never change anything on it.
+- **General practice.** If the user names none, use the general rules in Step 4 and label the
+  report "checked against general practice". If the account has other collectors older than 30
+  days, add a question (Q…): "Want me to compare this site with one of your established sites
+  (<up to 3 names>)?" If this is the account's first collector, say so and don't ask: there is
+  nothing to compare with yet.
 
 ## Step 2 — Fetch
 
-Do these calls, in this order (about 15 calls plus one per key device; stay under 45). Make the
+Do these calls, in this order (about 15 calls plus one per key device; stay under 45, or 60 with a
+reference site). Make the
 per-device calls one at a time, not in parallel; if one fails, retry it once, and report any device
 you still could not read as "not verified" rather than guessing:
 
@@ -70,8 +85,28 @@ default alert rules (where the account has them) may still be attaching. Offer t
 now as a preview and again later. Never call a device "misidentified" in the first hour without
 saying the type may still change.
 
-**Default alert rules.** Some accounts attach default rules to new collectors and devices; others
-attach nothing. Never assume either: what counts is what the bindings in items 9 and 10 show.
+**Account defaults.** What a new collector starts with depends on the account's own settings:
+some attach default alert rules to new collectors and devices, others attach nothing, and which
+device types are marked important automatically is configured per account. Never assume either
+way and never call a starting value "the platform default": what counts is what the bindings
+(items 9 and 10) and the device list show.
+
+### Step 2b — Read the reference site (only when the user named one)
+
+Read-only, on the reference collector:
+1. `search_devices` (`view: standard`, `page_size: 100`) — type, vendor, model, importance.
+2. `get_collector_alert_rule_bindings` — does it alert when the collector goes down, with which
+   rule.
+3. `get_device_alert_rule_bindings` for up to 12 of its infrastructure devices, at most 3 per type
+   (gateway/firewall, switch, access point, server/NAS/hypervisor, UPS), one at a time.
+
+From these, write its **standard** in one short table: for each device type, how many of the
+devices you read alert when down (and with which rule) and how many are marked important. A type
+is "in the standard" when most of the devices you read have it. Use this standard instead of the
+general rules in checks 1 and 2, bind the same rules the reference site uses, and say in a note
+where it differs from general practice (for example "your Pisa office doesn't alert on access
+points, so this check doesn't either"). If none of the reference site's infrastructure you read alerts when
+down, it has no alerting standard to copy: say so, and use general practice for check 1 only.
 
 ## Step 3 — Work out what matters
 
@@ -107,24 +142,32 @@ question (Q…).
      duplicate alerting (it will alert twice) and suggest the user runs an alert tune-up.
    - No suitable rule exists in the account → T…: "create a 'went down' rule in the Domotz app and
      choose who it notifies" (you cannot see notification channels, so never create rules).
-2. **Importance.** Key infrastructure should be marked important; endpoints that come and go
-   (workstations, laptops, mobile phones and tablets, guest devices) should not. Desk VoIP phones,
-   printers and displays are the MSP's call: leave their importance as it is unless asked. Propose the changes as a batch (B…),
+2. **Importance.** With a reference site, follow its standard. Otherwise, general practice: key
+   infrastructure should be marked important; endpoints that come and go (workstations, laptops,
+   mobile phones and tablets, guest devices) should not. Desk VoIP phones, printers and displays are
+   the MSP's call: leave their importance as it is unless asked. Describe what you found ("the
+   gateway is not marked important"), not why it happened. Propose the changes as a batch (B…),
    infrastructure first. Business-critical endpoints go in their own optional batch.
 3. **Credentials and integrations.** From the credential coverage:
    - switches, firewalls and routers whose `CONFIGURATION_MANAGEMENT` is LOCKED, or whose config
      backup is `AVAILABLE` but `DISABLED` → T…: "add SSH credentials in the app to turn on
      configuration backup for <names>";
    - cameras with `ONVIF_CAMERA` LOCKED → T…: add the camera credentials;
-   - key devices with no working SNMP → T…;
+   - key devices with no working SNMP → T…: set SNMP credentials for <names>. Offer to open the
+     SNMP credentials form for one device at a time (`get_snmp_credentials_form`): the user types
+     the credentials into the form and you never see them. If the form doesn't appear in this
+     chat, the action is in the Domotz app;
    - `default_snmp_credentials.is_platform_default: true` → T…: the collector reads SNMP with the
-     platform's default community; set the client's own (preferably SNMPv3) in the app.
+     platform's default community; set the client's own (preferably SNMPv3) in the Domotz app
+     (never through the chat);
+   - any other credential (SSH, ONVIF, OS, device management) can only be added in the Domotz app.
 4. **Remote access.** A collector issue naming a host it cannot reach for "Remote Connection" →
    T…: allow the collector outbound access to that host, or remote connections will not work.
 5. **Identification.** Key devices typed Generic or with an implausible type for their
    vendor/model (a hypervisor typed Desktop, a workstation typed Mobile, a UPS typed Smart Power
-   Plug) → T…: correct the type in the app (there is no tool to change it). Group them. On a site
-   younger than an hour, mark this check "preview".
+   Plug) → T…: correct the type in the Domotz app. Device types cannot be changed through the
+   Domotz MCP today, so say that once. Group them. On a site younger than an hour, mark this check
+   "preview".
 6. **Discovery scope.** Report the subnets scanned and the routed networks. If there is only the
    collector's own subnet, ask (Q…) whether the site has other VLANs or subnets (servers,
    cameras, VoIP, guest) that should be added as routed networks. Never assume they exist.
@@ -133,8 +176,12 @@ question (Q…).
 8. **Single points of failure.** From the dependency map, name the switches that the most key
    devices depend on, with the count. Information, no change.
 9. **Older sites only** (collector older than 30 days): devices down for more than 30 days and
-   duplicate records (many records on one IP with locally administered MACs). Report them as T…
-   (removing or unmanaging devices is the user's decision in the app).
+   duplicate records (many records on one IP with locally administered MACs).
+   - **Per-device mode** (`monitoring_mode` other than "Location Mode"): each monitored device is
+     billed, so report them as T…: "stop monitoring <n> devices in the app to free <n> device
+     slots" and list them in the evidence.
+   - **Location Mode**: monitoring a device costs nothing, so never suggest unmonitoring. Report
+     duplicates only as clutter (T…: remove in the app), and stale devices as information.
 
 ## Step 5 — The report
 
@@ -143,7 +190,7 @@ exactly this layout:
 
 ```markdown
 **<collector name> · <k> of 8 areas ready · approve <n> changes → <the main outcome>**
-<client> · collector [<id>] · installed <when> · <devices> devices · <settled | still settling: …>
+<client> · collector [<id>] · installed <when> · <devices> devices · <settled | still settling: …> · checked against <reference site name | general practice>
 
 ### Readiness
 
@@ -233,8 +280,9 @@ with its id. A batch may contain only:
 4. turn the TCP open-port scanner on or off (`update_collector_settings`,
    `tcp_open_port_scanner` only).
 
-Nothing else: no new rules, no credentials, no device types, no renaming, no unmanaging, no
-routed networks or external hosts, no discovery settings. Those are actions for the user (T…).
+Nothing else: no new rules, no credentials, no device types, no renaming, no change to monitoring
+state, no routed networks or external hosts, no discovery settings. Those are actions for the user
+(T…), and nothing is ever changed on a reference site.
 
 ## Step 6 — Apply what was approved
 

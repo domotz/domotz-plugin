@@ -17,6 +17,7 @@
   "installed": "2026-10-01",
   "devices": 33,
   "settled": "settled",
+  "baseline": "general practice",
   "outcome": "15 key devices alerting, up from 0",
   "coverage": {"before": 0, "after": 15, "total": 15, "label": "key devices that alert when they go down"},
   "areas": [
@@ -187,7 +188,7 @@ footer { margin-top: 24px; font: 400 12px/1.5 var(--mono); color: var(--muted); 
   var areas = d.areas || [], changes = d.changes || [], todo = d.todo || [];
   var ready = areas.filter(function (a) { return a.status === "ready"; }).length;
 
-  $("scope").textContent = d.site + " · " + d.devices + " devices · installed " + d.installed;
+  $("scope").textContent = d.site + " · " + d.devices + " devices · installed " + d.installed + (d.baseline ? " · checked against " + d.baseline : "");
   $("headline").textContent = d.outcome || (ready + " of " + areas.length + " areas ready");
   $("sub").textContent = ready + " of " + areas.length + " areas ready" + (changes.length ? " · " + changes.length + " changes to approve" : "") +
     (todo.length ? " · " + todo.length + " actions for you" : "") + (d.settled && d.settled !== "settled" ? " · " + d.settled : "");

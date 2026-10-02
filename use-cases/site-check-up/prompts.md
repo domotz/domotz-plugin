@@ -6,6 +6,7 @@
 - Is the **Main Street** site ready to hand over to the client?
 - Run a site check-up on the collector I installed most recently.
 - What's missing on **Warehouse** before we go live?
+- Check the new **Brightwater** site against our **Pisa office**, that's our standard.
 
 ## During the check-up
 

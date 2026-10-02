@@ -7,7 +7,7 @@
 ## The first reply
 
 **Brightwater Logistics - HQ · 2 of 8 areas ready · approve 3 changes → 14 key devices alert when down, up from 0, plus a collector-down alert**
-Brightwater Logistics · collector [325688] · installed 1 Oct 2026, 22:51 UTC · 33 devices · settled (initial discovery complete)
+Brightwater Logistics · collector [325688] · installed 1 Oct 2026, 22:51 UTC · 33 devices · settled (initial discovery complete) · checked against general practice
 
 ### Readiness
 
