@@ -51,7 +51,7 @@ Brightwater Logistics · collector [325688] · installed 1 Oct 2026, 22:51 UTC �
 
 Reply **"approve B1 B2"**, **"approve all"**, or **"why B1?"** for the evidence. Nothing changes until you approve.
 
-Want this as a one-page review for your team?
+*The one-page review follows in the same reply, as an artifact.*
 
 ## After "approve B1 B2 B3"
 

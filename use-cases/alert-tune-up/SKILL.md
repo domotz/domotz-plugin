@@ -216,23 +216,27 @@ Rules for the layout:
 - Keep everything else out of the first reply. If you are unsure between retire and leave alone,
   choose leave alone and say in its row what would change your mind.
 
-### Visual report (optional)
+### Visual report (shown by default)
 
 If this skill's folder contains `report-template.html` **and** you can create an HTML artifact or
-canvas in this chat, end the first reply with one line: "Want this as a one-page review for your team?"
-If the user says yes:
+canvas in this chat, build the one-page review **in the same reply, right after the markdown
+report**, without asking. Skip it only if the user asked for text only. It is the easiest way to
+read the findings and to share them with the team.
 
-1. Read `report-template.html`. Copy it **unchanged** except for the JSON data block — the
+1. Write the markdown report first, so it is there even if the page fails.
+2. Read `report-template.html`. Copy it **unchanged** except for the JSON data block — the
    script element with `id="audit"`, right after the opening comment. Replace only the JSON
    between that element's opening tag and its `</script>` with this audit's numbers — the same
-   numbers and wording as the markdown report, nothing new. The field names are in the
-   template's sample data. Keep the comment and every tag exactly as they are; if the page has
-   lost its header or comes out blank, you edited the wrong part.
-2. Publish it as an HTML artifact (or canvas). Don't restyle it, add sections or add buttons.
-3. Approval still happens in chat: the page tells the user what to reply.
+   numbers and wording as the markdown report, nothing new. The field names are in the template's sample
+   data. Keep the comment and every tag exactly as they are; if the page has lost its header or
+   comes out blank, you edited the wrong part.
+3. Publish it as an HTML artifact (or canvas). Don't restyle it, add sections or add buttons.
+4. Approval still happens in chat: the page tells the user what to reply.
+5. After you apply or undo a batch, offer one line: "Want the one-page review updated with what
+   changed?"
 
-If the file isn't there or you can't create an artifact, don't offer; the markdown report is the
-report.
+If the file isn't there or you can't create an artifact, skip it silently; the markdown report is
+the report.
 
 ### Evidence on request
 

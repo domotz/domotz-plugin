@@ -37,7 +37,7 @@
 
 Reply **"approve B1 B3"**, **"approve all"**, or **"why B2?"** for the evidence. Nothing changes until you approve.
 
-Want this as a one-page review for your team?
+*The one-page review follows in the same reply, as an artifact.*
 
 ## The one-page review
 

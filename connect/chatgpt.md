@@ -21,4 +21,4 @@ Start a new chat, choose the Domotz plugin under **Plugins** below the message b
 > Run an alert tune-up for my client Acme for the last 14 days.
 
 ChatGPT reads your alert history, shows a report and numbered batches of fixes, and changes
-nothing until you approve a batch. Where it can, it also offers the report as a one-page review.
+nothing until you approve a batch. Where it can, it also shows the report as a one-page review.
