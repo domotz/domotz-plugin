@@ -51,12 +51,13 @@ are important is each MSP's own standard. Pick the baseline once and say which o
 - **General practice.** If the user names none, use the general rules in Step 4 and label the
   report "checked against general practice". If the account has other collectors older than 30
   days, add a question (Q…): "Want me to compare this site with one of your established sites
-  (<up to 3 names>)?" If this is the account's first collector, say so and don't ask: there is
+  (<up to 3 names>)?" Suggest the online ones with the most managed devices, preferably in the
+  same organization; skip collectors that look like a test lab or a single computer. If this is the account's first collector, say so and don't ask: there is
   nothing to compare with yet.
 
 ## Step 2 — Fetch
 
-Do these calls, in this order (about 15 calls plus one per key device; stay under 45, or 60 with a
+Do these calls, in this order (about 15 calls plus one per key device; stay under 45, or 55 with a
 reference site). Make the
 per-device calls one at a time, not in parallel; if one fails, retry it once, and report any device
 you still could not read as "not verified" rather than guessing:
@@ -77,7 +78,7 @@ you still could not read as "not verified" rather than guessing:
    `linked_entities`).
 9. `get_collector_alert_rule_bindings` — rules on the collector itself.
 10. `get_device_alert_rule_bindings` for every **key device** (Step 3): all infrastructure first,
-    then business-critical endpoints, up to 30 devices in total. Say which ones you skipped.
+    then business-critical endpoints, up to 30 devices in total (20 with a reference site). Say which ones you skipped.
 
 **Is the site settled?** If `initialDiscovery.inProgress` is true, or the collector was created
 less than 30 minutes ago, say so: discovery, device types and topology are still settling, and
@@ -97,7 +98,7 @@ Read-only, on the reference collector:
 1. `search_devices` (`view: standard`, `page_size: 100`) — type, vendor, model, importance.
 2. `get_collector_alert_rule_bindings` — does it alert when the collector goes down, with which
    rule.
-3. `get_device_alert_rule_bindings` for up to 12 of its infrastructure devices, at most 3 per type
+3. `get_device_alert_rule_bindings` for up to 8 of its infrastructure devices, at most 2 per type
    (gateway/firewall, switch, access point, server/NAS/hypervisor, UPS), one at a time.
 
 From these, write its **standard** in one short table: for each device type, how many of the
