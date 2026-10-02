@@ -29,8 +29,8 @@ Brightwater Logistics · collector [325688] · installed 1 Oct 2026, 22:51 UTC �
 | **B1** | Bind "Collector Status" [52798] to the collector | 1 | No collector-down alert; this is the account's Critical agent_status rule |
 | **B2** | Bind "Device Status" [54034] to key infrastructure | 14 | 0 of 14 alert when down; rule already used on 22 devices |
 | **B3** | Mark 3 infrastructure devices important | 3 | Gateway, warehouse AP and DNS server are key but not important |
-| **B4** | Optional: bind "Device Status" [54034] to endpoints | 8 | 4 cameras, door controller and 3 POS terminals have no down alert |
-| **B5** | Optional: mark door controller and POS important | 4 | Business-critical endpoints; your call |
+| **B4** | Optional: bind "Device Status" [54034] to endpoints | 5 | 4 cameras and the door controller have no down alert |
+| **B5** | Optional: mark the door controller important | 1 | Business-critical endpoint; your call |
 | **B6** | Optional: turn on the TCP open-port scanner | 1 | Scans the site's public IP for exposed ports; currently off |
 
 ### To do in the Domotz app
@@ -48,7 +48,6 @@ Brightwater Logistics · collector [325688] · installed 1 Oct 2026, 22:51 UTC �
 - **Q1** Does HQ have other VLANs or subnets (servers, cameras, VoIP, guest) that should be added as routed networks?
 
 - "Device Status" [54034] is severity Warning; check in the app that it notifies the right people before approving B2.
-- The 3 POS terminals appear behind the warehouse AP, so they likely depend on it.
 
 Reply **"approve B1 B2"**, **"approve all"**, or **"why B1?"** for the evidence. Nothing changes until you approve.
 

@@ -68,14 +68,16 @@ you still could not read as "not verified" rather than guessing:
    SNMP devices read, collector issues (hosts it cannot reach).
 3. `get_network_configuration` — discovery flags, attached interfaces, routed networks, external
    hosts.
-4. `search_devices` with `filter_by: {collector_ids: [<id>]}`, `view: standard`, `page_size: 100`
-   (page on if more) — name, type, vendor, model, importance, status, monitoring state.
+4. `search_devices` with `filter_by: {collector_ids: [<id>]}`, `view: detailed`, `page_size: 100`
+   (page on if more) — name, type, vendor, model, importance, status, monitoring state, and
+   `has_shared_alerts` (the device has classic shared alerts, see below).
 5. `get_collector_credential_coverage` — per device: which integrations work (UNLOCKED) or not
    (LOCKED), SNMP reading status.
 6. `get_config_backup_status` — devices with a backup driver, and whether backup is ENABLED.
 7. `network_topology` with `view: full`, `max_links: 300` — links and the dependency map.
 8. `list_alert_rules` — the account's rules (id, name, metric, condition, severity,
-   `linked_entities`).
+   `linked_entities`). If it answers that the Alert Rules feature is not enabled, skip items 9
+   and 10 (see "Which alerting the account uses").
 9. `get_collector_alert_rule_bindings` — rules on the collector itself.
 10. `get_device_alert_rule_bindings` for every **key device** (Step 3): all infrastructure first,
     then business-critical endpoints, up to 30 devices in total (20 with a reference site). Say which ones you skipped.
@@ -85,6 +87,28 @@ less than 30 minutes ago, say so: discovery, device types and topology are still
 default alert rules (where the account has them) may still be attaching. Offer to run the check
 now as a preview and again later. Never call a device "misidentified" in the first hour without
 saying the type may still change.
+
+**Which alerting the account uses.** Domotz has two alerting systems, and the tools only manage
+one of them:
+- **Alert rules** (`list_alert_rules`, the bindings tools): what this skill reads and binds.
+  Accounts created since May 2026 have only these.
+- **Classic alerts**, on older accounts: shared alerts and personal alerts, which can be active at
+  the same time as alert rules. The tools show only whether a device has shared alerts
+  (`has_shared_alerts`, and `event_profile_count` in `get_device_alerts`), not which events they
+  cover. Personal alerts and classic collector alerts are not visible at all.
+
+So:
+- `list_alert_rules` says the feature is not enabled → the account uses classic alerts only. Mark
+  Alerting **Your action**: "this account uses classic alerts, which this check can't read; check
+  in the app that the collector and key devices alert when down". Propose no binding.
+- A key device with `has_shared_alerts: true` → count it as "has classic shared alerts", not as
+  alerting or not alerting, and don't propose a binding for it: it may already alert when down,
+  and a second rule would alert twice. Add T…: "check that the classic shared alerts on <names>
+  include 'went down'".
+- If any device on the site has `has_shared_alerts: true`, or the account's oldest collector
+  (`search_collectors`, `sort_by: creation_time`) was installed before May 2026, add one note:
+  "Personal and classic collector alerts aren't visible to this check; if you still use them,
+  check them before approving."
 
 **Account defaults.** What a new collector starts with depends on the account's own settings:
 some attach default alert rules to new collectors and devices, others attach nothing, and which
@@ -116,8 +140,8 @@ down, it has no alerting standard to copy: say so, and use general practice for 
   root), firewalls and routers, switches, Wi-Fi access points and controllers, servers, NAS,
   hypervisors (vendor/model such as ESX, even if typed Desktop), UPS (APC, Eaton, CyberPower… even
   if typed something else);
-- **business-critical endpoints:** point-of-sale terminals, door/access controllers, and cameras.
-  These are proposed separately, because whether they matter is the MSP's call.
+- **business-critical endpoints:** cameras and door/access controllers. These are proposed
+  separately, because whether they matter is the MSP's call.
 
 Use the topology **edges** to see what depends on what: an edge from a switch (`source_id`) to a
 device (`target_id`) means the device is plugged into that switch, so count the devices behind each
@@ -135,6 +159,8 @@ question (Q…).
 1. **Alerting coverage.** Is there a "collector went down" rule bound to the collector (a rule on
    `agent_status` with condition "went down")? Does every key device have a "device went down"
    rule (`device_status`, "went down") bound? Count: "<n> of <m> key devices alert when down".
+   This gap is common: on established Domotz sites about half of the infrastructure has no
+   per-device down alert. Report it as a gap to close, not as a mistake.
    - Gap → propose binding an **existing** rule (B…): for the collector, the `agent_status` rule
      with the highest severity, preferring the one attached to the most collectors; for devices,
      the `device_status` "went down" rule attached to the most devices. Name it and its severity.

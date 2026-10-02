@@ -56,6 +56,10 @@ which you fill in yourself.
   says so and treats identification as a preview.
 - Device types can't be changed through the Domotz MCP today, so wrong types are actions for you
   in the app. SSH, ONVIF and other non-SNMP credentials are added in the app too.
+- Alerting: the check reads and binds **alert rules**. On older accounts that still use classic
+  alerts, it sees only whether a device has shared alerts, not which events they cover, and it
+  can't see personal or classic collector alerts, so it tells you what to check in the app
+  instead of binding.
 - With a reference site, claude.ai may show "Continue" after the report (its per-turn tool
   limit); the report is complete, and replying continues as normal.
 - Stale devices: on per-device monitoring the check-up lists those you could stop monitoring to
