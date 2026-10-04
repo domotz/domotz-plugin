@@ -1,6 +1,6 @@
 ---
 name: site-check-up
-description: Run a site check-up on a Domotz collector — check a newly installed (or existing) client site for the gaps that bite later, such as devices and the collector that would never alert when they go down, infrastructure not marked important, missing credentials and config backups, misidentified devices and unscanned subnets. Report what is ready, propose the fixes it can make (with undo), and list what the MSP must do in the Domotz app. Use when the user has just installed a collector, onboards a new client or site, asks whether a site is set up correctly, ready for handover, or "what's missing".
+description: Run a site check-up on a Domotz collector — find devices and the collector that would never alert when down, infrastructure not marked important, missing credentials and config backups, misidentified devices and unscanned subnets. Propose reversible fixes and list what the MSP must do in the Domotz app. Use when the user has just installed a collector, onboards a client or site, asks whether a site is set up correctly or ready for handover, or asks what's missing.
 ---
 
 # Site check-up

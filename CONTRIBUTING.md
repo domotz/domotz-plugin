@@ -14,7 +14,9 @@ whichever one they run.
 - `prompts.md`: starter prompts and useful follow-ups.
 - `example-report.md`: what a report looks like.
 - `SKILL.md` frontmatter: `name` (lowercase, hyphens, ≤ 64 characters) and a `description`
-  (≤ 1,024 characters) that says what it does *and* when to use it.
+  that says what it does *and* when to use it. Keep the description under 500 characters (the
+  ChatGPT skill editor's limit; the Agent Skills limit is 1,024), and never put a colon followed
+  by a space in it: strict YAML parsers, GitHub's included, reject it.
 
 ## Flow
 

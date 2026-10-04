@@ -8,11 +8,17 @@ Needs a ChatGPT plan that supports custom plugins (MCP connectors) and skills.
    `https://mcp.domotz.com/mcp`.
 2. Sign in with your Domotz account when asked. ChatGPT acts with that account's permissions.
 
-## 2. Add the playbook
+## 2. Add the playbooks
 
-1. Download [**alert-tune-up.zip**](https://github.com/domotz/domotz-ai-playbooks/releases/latest/download/alert-tune-up.zip)
-   from the latest release.
-2. In ChatGPT, open **Skills → Add → Upload from your computer** and select the zip.
+1. Download the playbooks you want from the latest release:
+   [**alert-tune-up.zip**](https://github.com/domotz/domotz-ai-playbooks/releases/latest/download/alert-tune-up.zip),
+   [**site-check-up.zip**](https://github.com/domotz/domotz-ai-playbooks/releases/latest/download/site-check-up.zip).
+2. In ChatGPT, open **Skills → Add → Upload from your computer** and select a zip.
+
+**Updating to a new version:** uploading a zip with the same name does not replace the skill you
+already have. Open the skill with **⋯ → Edit** instead: replace the text below the name and
+description with the new `SKILL.md` (everything after its `---` header), upload the new
+`report-template.html` and remove the old one, then **Save changes**.
 
 ## 3. Ask
 
