@@ -23,45 +23,45 @@
   "changes": [
     {
       "id": "B1",
-      "change": "Unbind \"errors > 0\" rule from Lobby AP (Client A)",
+      "change": "Unbind \"Interface errors\" [2210] from Lobby AP (Client A)",
       "saved": 118,
       "est": false,
       "why": "Fires on any interface error; 116 of 118 cleared in under 5 min"
     },
     {
       "id": "B2",
-      "change": "Unbind Device Status from 6 staff laptops (Client B)",
+      "change": "Unbind \"Device Status\" [1104] from 6 staff laptops (Client B)",
       "saved": 64,
       "est": false,
       "why": "Laptops leave the network every evening; 58 of 64 fired between 17:30 and 19:30"
     },
     {
       "id": "B3",
-      "change": "Raise branch VPN latency rule 10 → 50 ms (Client C)",
+      "change": "Raise \"VPN latency\" [2318] 10 → 50 ms (Client C)",
       "saved": 29,
       "est": true,
       "why": "Fired 29 times at only 11–24 ms, which is normal for that link"
     },
     {
       "id": "B4",
-      "change": "Unbind Device Status from 2 printers (Client A)",
+      "change": "Unbind \"Device Status\" [1104] from 2 printers (Client A)",
       "saved": 22,
       "est": false,
       "why": "The printers drop off when they go to sleep; 20 of 22 cleared in under 5 min"
     },
     {
       "id": "B5",
-      "change": "Unbind \"speed > 1000 b/s\" from Core Switch (Client B)",
+      "change": "Unbind \"Port speed\" [2297] from Core Switch (Client B)",
       "saved": 8,
       "est": false,
       "why": "Always true on a 1 Gb port; all 8 alerts still open"
     },
     {
       "id": "B6",
-      "change": "Unbind 2 duplicate collector-status rules at Main Office (Client A)",
+      "change": "Unbind \"Collector offline\" [3302], \"Site down\" [3305] (Client A)",
       "saved": 6,
       "est": false,
-      "why": "3 rules fired in the same second for all 3 outages; keeps the Critical one"
+      "why": "Same condition and severity as \"Collector Status\" [3301], which stays; all 3 fired together"
     }
   ],
   "leave": [
@@ -86,11 +86,12 @@
   ],
   "also": [
     "Never-closing backlog: 6 driver failures, 4 WAN changes, 5 new devices discovered",
-    "18 rules are attached to nothing"
+    "18 rules are attached to nothing",
+    "\"Device Status\" [1104] (Warning) and \"Server down – on-call\" [1190] (Critical) both alert for the Head Office servers; kept both. Keep both?"
   ],
   "notes": [
     "B3: a threshold belongs to the rule, so it also applies to the rule's other device",
-    "B6: check in the app that the Critical rule notifies the right place"
+    "B6: check in the app that \"Collector Status\" [3301] notifies everyone the two copies did"
   ]
 }
 </script>

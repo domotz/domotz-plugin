@@ -12,12 +12,12 @@
 
 | | Change | Alerts saved | Why |
 |---|---|--:|---|
-| **B1** | Unbind "errors > 0" rule from Lobby AP (Client A) | **118** | Fires on any interface error; 116 of 118 cleared in under 5 min |
-| **B2** | Unbind Device Status from 6 staff laptops (Client B) | **64** | Laptops leave the network every evening; 58 of 64 fired between 17:30 and 19:30 |
-| **B3** | Raise branch VPN latency rule 10 → 50 ms (Client C) | **29** *(est.)* | Fired 29× at only 11–24 ms, which is normal for that link |
-| **B4** | Unbind Device Status from 2 printers (Client A) | **22** | The printers drop off when they go to sleep; 20 of 22 cleared in under 5 min |
-| **B5** | Unbind "speed > 1000 b/s" from Core Switch (Client B) | **8** | Always true on a 1 Gb port; all 8 alerts still open |
-| **B6** | Unbind 2 duplicate collector-status rules at Main Office (Client A) | **6** | 3 rules fired in the same second for all 3 outages; keeps the Critical one |
+| **B1** | Unbind "Interface errors" [2210] from Lobby AP (Client A) | **118** | Fires on any interface error; 116 of 118 cleared in under 5 min |
+| **B2** | Unbind "Device Status" [1104] from 6 staff laptops (Client B) | **64** | Laptops leave the network every evening; 58 of 64 fired between 17:30 and 19:30 |
+| **B3** | Raise "VPN latency" [2318] 10 → 50 ms (Client C) | **29** *(est.)* | Fired 29× at only 11–24 ms, which is normal for that link |
+| **B4** | Unbind "Device Status" [1104] from 2 printers (Client A) | **22** | The printers drop off when they go to sleep; 20 of 22 cleared in under 5 min |
+| **B5** | Unbind "Port speed" [2297] from Core Switch (Client B) | **8** | Always true on a 1 Gb port; all 8 alerts still open |
+| **B6** | Unbind "Collector offline" [3302], "Site down" [3305] (Client A) | **6** | Same condition and severity as "Collector Status" [3301], which stays; all 3 fired together |
 
 ### Leave alone — fix the cause, not the alert
 
@@ -30,10 +30,11 @@
 ### Also found
 - Never-closing backlog: 6 driver failures, 4 WAN changes, 5 new devices discovered
 - 18 rules are attached to nothing · every device that alerted is marked important
+- "Device Status" [1104] (Warning) and "Server down – on-call" [1190] (Critical) both alert for the Head Office servers; kept both, since the severities differ. Keep both?
 
 - **B1:** the rule is attached to 3 access points; this removes it from the Lobby AP only, where all 118 alerts came from.
 - **B3:** a threshold belongs to the rule, so it also applies to the rule's other device, which fired nothing this month.
-- **B6:** check in the app that the Critical rule notifies the right place.
+- **B6:** check in the app that "Collector Status" [3301] notifies everyone "Collector offline" and "Site down" did; if not, keep them.
 
 Reply **"approve B1 B3"**, **"approve all"**, or **"why B2?"** for the evidence. Nothing changes until you approve.
 

@@ -26,7 +26,11 @@ you report comes from data you fetched in this conversation.
 4. **One client at a time.** Never put changes for two organizations in the same batch.
 5. **Say what you covered.** If you could not read every alert in scope, say exactly what you read
    and what you did not. Never present a partial read as complete.
-6. Say "collector", not "agent". Name devices and rules by name, with ids in brackets.
+6. Say "collector", not "agent". **Name every rule and device by its name, with its id in
+   brackets**: "Collector Status [52798]", "Lobby AP [20895740]". This applies everywhere — table
+   cells, notes, "Also found", evidence, apply and undo results. Never write an id alone, a
+   description instead of the name ("the Critical one", "rule 2 of 3"), or "two duplicate rules"
+   without naming them. If a name is long, shorten it with "…" but keep the id.
 
 ## Step 1 — Scope
 
@@ -92,9 +96,18 @@ and that the user can reply "continue".
 Check these in order. One alert can belong to more than one pattern; the earlier pattern wins when
 you bucket it.
 
-1. **Duplicate rules.** Two or more rules on the same metric fire for the same device or collector
-   within 2 minutes of each other (for example three collector-status rules, each firing for the
-   same outage). Every event is alerted several times.
+1. **Overlapping rules.** Two or more rules on the same metric fire for the same device or
+   collector within 2 minutes of each other (for example three collector-status rules, each firing
+   for the same outage). Compare them before calling them duplicates:
+   - **Same metric, condition, threshold and severity** → duplicates: every event is alerted
+     several times with the same weight.
+   - **Different severity or threshold** (for example "Device Status" Warning and "Server down"
+     Critical, or latency > 50 ms and > 100 ms) → escalation tiers, not duplicates.
+   - **Notification channels:** Domotz doesn't show which channels a rule notifies, so two rules
+     that look identical may reach different people (the MSP's techs and the client's IT, email
+     and an on-call pager). Use the rule names as the only hint: a name that mentions a client, a
+     team, a person or a channel ("Client A email", "NOC", "on-call", "Slack", "PagerDuty")
+     means the copies probably notify different people.
 2. **Can never clear, or meaningless condition.** The condition is true in normal operation, so
    alerts stay open or re-fire constantly: "interface speed greater than 1000 b/s", "errors greater
    than 0" on a counter that is rarely exactly 0, a "different from up" rule on interfaces that are
@@ -125,9 +138,11 @@ you bucket it.
 ## Step 4 — Decide the bucket
 
 **Safe to retire** (unbind; no loss of useful signal):
-- the extra copies of a duplicate rule — keep the one with the highest severity, and warn that
-  Domotz doesn't show which notification channel each copy uses, so the user should check in the
-  app that the one they keep notifies the right place;
+- the extra copies of a duplicate rule (same metric, condition, threshold and severity), when
+  their names give no sign that they notify different people. Name the copy you keep and every
+  copy you unbind, and keep the one attached to the most entities (or the oldest, on a tie). Add
+  a note: "check in the app that <kept name> [<id>] notifies everyone <removed names> did; if they
+  notify different people, keep them all";
 - a meaningless or can-never-clear condition, **on any device, infrastructure included**. A rule
   such as "errors > 0" or "speed > 1000 b/s" whose alerts mostly clear within 5 minutes is noise
   even on a switch or access point: unbind it from the noisy device. Say in the Why cell that real
@@ -155,7 +170,12 @@ you bucket it.
   silencing the symptoms;
 - a device that flaps and matters: name it as a device problem to investigate;
 - never-closing events that carry information (new device discovered, WAN/ISP changed, config
-  backup failed) — mention the open backlog.
+  backup failed) — mention the open backlog;
+- overlapping rules that differ in severity or threshold, or whose names suggest different
+  recipients: they are probably escalation tiers or separate audiences. Don't propose removing
+  them. List them under "Also found" by name, with their severities, and ask whether both are
+  wanted (for example "Device Status [54034] (Warning) and Server down – on-call [61002]
+  (Critical) both alert for the NAS; keep both?").
 
 When you are unsure between retire and leave alone, choose leave alone and say what would change
 your mind. "Unsure" means the evidence points both ways, not that a change needs care: a rule
@@ -199,8 +219,8 @@ Reply **"approve B1 B3"**, **"approve all"**, or **"why B2?"** for the evidence.
 
 Rules for the layout:
 - **Sort** proposed changes by alerts saved, largest first, and number them in that order.
-- **Keep cells short:** Change at most 55 characters, Why and What to fix at most 90. Shorten
-  rather than wrap; the detail belongs in the evidence block.
+- **Keep cells short:** Change at most 65 characters (rule names included), Why and What to fix
+  at most 90. Shorten rather than wrap; the detail belongs in the evidence block.
 - **Alerts saved** = alerts in this window that the change would have prevented. Exact for unbinds;
   for threshold changes count the fired values that stay below the new threshold and mark
   *(est.)*. Count each alert once even if two batches touch it. The headline adds them up.
@@ -211,7 +231,7 @@ Rules for the layout:
   e.g. "(Client A)".
 - **Notes:** at most 4 one-line notes after "Also found", only for what the user must check
   before approving — a rule shared with other devices, the notification-channel check for
-  duplicates, a device you left out on purpose.
+  duplicates (naming the rule kept and the rules removed), a device you left out on purpose.
 - **Leave alone** lists only the items that account for a meaningful share of alerts (top 3–5).
 - Keep everything else out of the first reply. If you are unsure between retire and leave alone,
   choose leave alone and say in its row what would change your mind.
@@ -248,7 +268,7 @@ as a short table:
 
 | | |
 |---|---|
-| Rule | <name> [<id>] · <condition> · severity <sev> · attached to <linked_entities> |
+| Rule | <name> [<id>] · <condition> · severity <sev> · attached to <linked_entities> — for an overlap batch, one line per rule, marked "keeps" or "unbinds" |
 | Targets | <device or collector names with ids> |
 | Alerts | <n> in the window · <n> closed within 5 min · <n> still open |
 | Values | <min>–<max> (threshold <t>) — threshold rules only |
