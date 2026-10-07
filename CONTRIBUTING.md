@@ -1,11 +1,12 @@
 # The playbook contract
 
-Every playbook in `use-cases/` follows this contract, so users get the same behaviour
+Every playbook in `skills/` follows this contract, so users get the same behaviour
 whichever one they run.
 
 ## Shape
 
-- One folder per playbook: `use-cases/<name>/`.
+- One folder per playbook: `skills/<name>/`. The repository root is a Claude plugin
+  (`.claude-plugin/plugin.json`, `.mcp.json`); raise `version` in `plugin.json` with every release.
 - `SKILL.md` is the playbook. It must be **self-contained**: a user can paste it into a chat
   (any client without skill support) and it still works. No scripts, no code execution, and no
   other file it depends on. An optional extra, such as an HTML report template, may sit next to

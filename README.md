@@ -11,8 +11,8 @@ connect your assistant to the Domotz MCP server, add the playbook, and ask.
 
 | Playbook | What you get | Changes it can make |
 |---|---|---|
-| [Alert tune-up](use-cases/alert-tune-up/) | Which alerts are noise, which rules need a better threshold, which are real signal, with evidence and ready-to-approve fixes ([example](use-cases/alert-tune-up/example-report.md)) | Unbind rules, adjust thresholds (only after you approve, all reversible) |
-| [Site check-up](use-cases/site-check-up/) | Is a new (or existing) site ready: what would never alert, what isn't marked important, which credentials and backups are missing, with fixes to approve | Bind "went down" rules, set importance (only after you approve, all reversible) |
+| [Alert tune-up](skills/alert-tune-up/) | Which alerts are noise, which rules need a better threshold, which are real signal, with evidence and ready-to-approve fixes ([example](skills/alert-tune-up/example-report.md)) | Unbind rules, adjust thresholds (only after you approve, all reversible) |
+| [Site check-up](skills/site-check-up/) | Is a new (or existing) site ready: what would never alert, what isn't marked important, which credentials and backups are missing, with fixes to approve | Bind "went down" rules, set importance (only after you approve, all reversible) |
 
 More are on the way.
 
@@ -30,9 +30,21 @@ You need a Domotz account and an AI assistant that can use MCP connectors.
 [Claude Code](connect/claude-code.md) ·
 [Other MCP clients](connect/other-clients.md)
 
-### 2. Install the playbook
+### 2. Install the playbooks
 
-**Claude (web and desktop):**
+**As a Claude plugin:** this repository is also a Claude plugin that bundles both playbooks and
+the Domotz connector. In Claude Code, run it straight from a clone:
+
+```bash
+git clone https://github.com/domotz/domotz-ai-playbooks
+claude --plugin-dir ./domotz-ai-playbooks
+```
+
+The playbooks then appear as `/domotz-ai-playbooks:alert-tune-up` and
+`/domotz-ai-playbooks:site-check-up`, and `/mcp` shows the Domotz connector, which asks you to
+sign in to Domotz the first time it is used.
+
+**Claude (web and desktop), one playbook at a time:**
 
 1. Download the playbook's zip, for example [**alert-tune-up.zip**](https://github.com/domotz/domotz-ai-playbooks/releases/latest/download/alert-tune-up.zip) from the
    latest release.
@@ -47,21 +59,32 @@ computer**.
 ```bash
 git clone https://github.com/domotz/domotz-ai-playbooks
 mkdir -p ~/.claude/skills
-cp -r domotz-ai-playbooks/use-cases/alert-tune-up ~/.claude/skills/
+cp -r domotz-ai-playbooks/skills/alert-tune-up ~/.claude/skills/
 ```
 
 **Any other assistant:** paste the contents of
-[`use-cases/alert-tune-up/SKILL.md`](use-cases/alert-tune-up/SKILL.md) as the first message of
+[`skills/alert-tune-up/SKILL.md`](skills/alert-tune-up/SKILL.md) as the first message of
 a chat, then ask your question.
 
 ### 3. Ask
 
 > Run an alert tune-up for my client Acme for the last 14 days.
 
-More starter prompts: [prompts.md](use-cases/alert-tune-up/prompts.md).
+More starter prompts: [prompts.md](skills/alert-tune-up/prompts.md).
 
-Your assistant talks to Domotz directly; your data never passes through anything in this
-repository.
+## What data it uses and sends
+
+- The playbooks read and change data only in **your own Domotz account**, through the Domotz MCP
+  server at `https://mcp.domotz.com/mcp`, signed in as you and limited to your permissions. They
+  run inside your AI assistant, so what they read is processed by that assistant's provider
+  under your agreement with them.
+- Changes happen only after you approve a numbered batch, and each one is reversible.
+- They never ask for, store or send passwords or other credentials.
+- The optional one-page review is an HTML page your assistant builds from
+  `report-template.html`. It loads its fonts from Google Fonts (`fonts.googleapis.com`) and
+  sends nothing anywhere.
+- The plugin has no scripts, hooks or other servers, and nothing in this repository receives
+  your data.
 
 ## How playbooks behave
 

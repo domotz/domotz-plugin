@@ -15,14 +15,22 @@ Or without a key, and sign in when prompted:
 claude mcp add --transport http domotz https://mcp.domotz.com/mcp
 ```
 
-## 2. Add a playbook
+## 2. Add the playbooks
 
-Copy the playbook folder into your skills directory:
+Load the repository as a plugin. It bundles both playbooks and the Domotz connector, so you can
+skip step 1 if you sign in when prompted:
+
+```bash
+git clone https://github.com/domotz/domotz-ai-playbooks
+claude --plugin-dir ./domotz-ai-playbooks
+```
+
+Or copy a single playbook folder into your skills directory:
 
 ```bash
 git clone https://github.com/domotz/domotz-ai-playbooks
 mkdir -p ~/.claude/skills
-cp -r domotz-ai-playbooks/use-cases/alert-tune-up ~/.claude/skills/
+cp -r domotz-ai-playbooks/skills/alert-tune-up ~/.claude/skills/
 ```
 
 ## 3. Ask

@@ -8,7 +8,7 @@ dist="$root/dist"
 rm -rf "$dist"
 mkdir -p "$dist"
 
-for dir in "$root"/use-cases/*/; do
+for dir in "$root"/skills/*/; do
   name="$(basename "$dir")"
   skill="$dir/SKILL.md"
   [[ -f "$skill" ]] || continue
