@@ -21,16 +21,16 @@ Load the repository as a plugin. It bundles both playbooks and the Domotz connec
 skip step 1 if you sign in when prompted:
 
 ```bash
-git clone https://github.com/domotz/domotz-ai-playbooks
-claude --plugin-dir ./domotz-ai-playbooks
+git clone https://github.com/domotz/domotz-plugin
+claude --plugin-dir ./domotz-plugin
 ```
 
 Or copy a single playbook folder into your skills directory:
 
 ```bash
-git clone https://github.com/domotz/domotz-ai-playbooks
+git clone https://github.com/domotz/domotz-plugin
 mkdir -p ~/.claude/skills
-cp -r domotz-ai-playbooks/skills/alert-tune-up ~/.claude/skills/
+cp -r domotz-plugin/skills/alert-tune-up ~/.claude/skills/
 ```
 
 ## 3. Ask

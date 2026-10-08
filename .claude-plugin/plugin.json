@@ -1,11 +1,20 @@
 {
-  "name": "domotz-ai-playbooks",
-  "displayName": "Domotz AI Playbooks",
-  "version": "1.4.0",
+  "name": "domotz",
+  "displayName": "Domotz",
+  "version": "1.5.0",
   "description": "Network-operations playbooks for MSPs on Domotz: tune noisy alert rules and check that a site is set up the way it should be. Reads your Domotz data, explains what it means, and makes only the reversible changes you approve.",
-  "author": { "name": "Domotz", "url": "https://www.domotz.com" },
-  "homepage": "https://github.com/domotz/domotz-ai-playbooks",
-  "repository": "https://github.com/domotz/domotz-ai-playbooks",
+  "author": {
+    "name": "Domotz",
+    "url": "https://www.domotz.com"
+  },
+  "homepage": "https://github.com/domotz/domotz-plugin",
+  "repository": "https://github.com/domotz/domotz-plugin",
   "license": "MIT",
-  "keywords": ["domotz", "msp", "network-monitoring", "alerts", "onboarding"]
+  "keywords": [
+    "domotz",
+    "msp",
+    "network-monitoring",
+    "alerts",
+    "onboarding"
+  ]
 }

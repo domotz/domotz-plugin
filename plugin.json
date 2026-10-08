@@ -1,0 +1,42 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "domotz",
+  "version": "1.5.0",
+  "description": "Network-operations playbooks for MSPs on Domotz: tune noisy alert rules and check that a site is set up the way it should be. Reads your Domotz data, explains what it means, and makes only the reversible changes you approve.",
+  "author": {
+    "name": "Domotz",
+    "url": "https://www.domotz.com"
+  },
+  "homepage": "https://github.com/domotz/domotz-plugin",
+  "repository": "https://github.com/domotz/domotz-plugin",
+  "license": "MIT",
+  "keywords": [
+    "domotz",
+    "msp",
+    "network-monitoring",
+    "alerts",
+    "onboarding"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Domotz",
+        "shortDescription": "Tune noisy alerts and check site setup in your Domotz account",
+        "longDescription": "Network-operations playbooks for MSPs on Domotz: tune noisy alert rules and check that a site is set up the way it should be. Reads your Domotz data, explains what it means, and makes only the reversible changes you approve.",
+        "developerName": "Domotz",
+        "category": "Productivity",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "websiteURL": "https://www.domotz.com",
+        "privacyPolicyURL": "https://www.domotz.com/privacy-policy.php",
+        "termsOfServiceURL": "https://www.domotz.com/terms-and-conditions.php",
+        "defaultPrompt": [
+          "Run an alert tune-up for my client Acme for the last 14 days.",
+          "Run a site check-up on the collector I installed most recently."
+        ]
+      }
+    }
+  }
+}

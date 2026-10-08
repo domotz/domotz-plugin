@@ -15,7 +15,7 @@ Enterprise).
 
 ## 2. Add a playbook
 
-1. Download [**alert-tune-up.zip**](https://github.com/domotz/domotz-ai-playbooks/releases/latest/download/alert-tune-up.zip) from the
+1. Download [**alert-tune-up.zip**](https://github.com/domotz/domotz-plugin/releases/latest/download/alert-tune-up.zip) from the
    latest release.
 2. In Claude, open **Customize → Skills**, add a skill, and upload the zip.
 3. Check that the skill is switched on.

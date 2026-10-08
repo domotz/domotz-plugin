@@ -28,3 +28,12 @@ for dir in "$root"/skills/*/; do
   rm -rf "$stage"
   echo "built dist/$name.zip"
 done
+
+# The whole plugin as one zip, for the ChatGPT plugin submission (Agent Plugins format:
+# plugin.json and mcp.json at the root, skills/ next to them).
+stage="$(mktemp -d)"
+cp "$root/plugin.json" "$root/mcp.json" "$root/README.md" "$root/LICENSE" "$stage/"
+cp -R "$root/skills" "$stage/skills"
+(cd "$stage" && zip -qr "$dist/domotz-plugin.zip" .)
+rm -rf "$stage"
+echo "built dist/domotz-plugin.zip"

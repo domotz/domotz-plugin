@@ -1,7 +1,10 @@
-# Domotz AI Playbooks
+# Domotz
 
-Ready-made workflows that let your AI assistant do real network-operations work in your
-Domotz account: read the data, explain what it means, and make the changes you approve.
+The Domotz plugin for Claude and ChatGPT: ready-made playbooks that let your AI assistant do
+real network-operations work in your Domotz account. It reads the data, explains what it
+means, and makes only the changes you approve. The plugin bundles the playbooks and the Domotz
+connector, so once it is listed in your assistant's plugin directory you add it, sign in to
+Domotz, and ask.
 
 Works in Claude and ChatGPT; other MCP clients can paste the playbook. Each playbook is a single
 instruction file (an [Agent Skill](https://agentskills.io)). There is no script to run:
@@ -32,21 +35,22 @@ You need a Domotz account and an AI assistant that can use MCP connectors.
 
 ### 2. Install the playbooks
 
-**As a Claude plugin:** this repository is also a Claude plugin that bundles both playbooks and
-the Domotz connector. In Claude Code, run it straight from a clone:
+**As a plugin:** this repository is a plugin for Claude (`.claude-plugin/plugin.json`) and for
+ChatGPT (`plugin.json`, Agent Plugins format) that bundles both playbooks and the Domotz
+connector. In Claude Code, run it straight from a clone:
 
 ```bash
-git clone https://github.com/domotz/domotz-ai-playbooks
-claude --plugin-dir ./domotz-ai-playbooks
+git clone https://github.com/domotz/domotz-plugin
+claude --plugin-dir ./domotz-plugin
 ```
 
-The playbooks then appear as `/domotz-ai-playbooks:alert-tune-up` and
-`/domotz-ai-playbooks:site-check-up`, and `/mcp` shows the Domotz connector, which asks you to
+The playbooks then appear as `/domotz:alert-tune-up` and
+`/domotz:site-check-up`, and `/mcp` shows the Domotz connector, which asks you to
 sign in to Domotz the first time it is used.
 
 **Claude (web and desktop), one playbook at a time:**
 
-1. Download the playbook's zip, for example [**alert-tune-up.zip**](https://github.com/domotz/domotz-ai-playbooks/releases/latest/download/alert-tune-up.zip) from the
+1. Download the playbook's zip, for example [**alert-tune-up.zip**](https://github.com/domotz/domotz-plugin/releases/latest/download/alert-tune-up.zip) from the
    latest release.
 2. In Claude, open **Customize → Skills**, add a skill, and upload the zip.
 3. Check that the skill is switched on.
@@ -57,9 +61,9 @@ computer**.
 **Claude Code:** copy the playbook folder into your skills directory:
 
 ```bash
-git clone https://github.com/domotz/domotz-ai-playbooks
+git clone https://github.com/domotz/domotz-plugin
 mkdir -p ~/.claude/skills
-cp -r domotz-ai-playbooks/skills/alert-tune-up ~/.claude/skills/
+cp -r domotz-plugin/skills/alert-tune-up ~/.claude/skills/
 ```
 
 **Any other assistant:** paste the contents of
