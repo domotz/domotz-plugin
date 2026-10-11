@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "domotz",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Network-operations playbooks for MSPs on Domotz: tune noisy alert rules and check that a site is set up the way it should be. Reads your Domotz data, explains what it means, and makes only the reversible changes you approve.",
   "author": {
     "name": "Domotz",

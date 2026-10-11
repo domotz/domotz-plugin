@@ -1,0 +1,18 @@
+{
+  "name": "domotz",
+  "owner": {
+    "name": "Domotz",
+    "url": "https://www.domotz.com"
+  },
+  "metadata": {
+    "description": "The Domotz plugin: network-operations playbooks for MSPs, with the Domotz MCP connector."
+  },
+  "plugins": [
+    {
+      "name": "domotz",
+      "source": "./",
+      "description": "Network-operations playbooks for MSPs on Domotz: tune noisy alert rules and check that a site is set up the way it should be.",
+      "homepage": "https://github.com/domotz/domotz-plugin"
+    }
+  ]
+}

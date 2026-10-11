@@ -15,7 +15,7 @@ connect your assistant to the Domotz MCP server, add the playbook, and ask.
 | Playbook | What you get | Changes it can make |
 |---|---|---|
 | [Alert tune-up](skills/alert-tune-up/) | Which alerts are noise, which rules need a better threshold, which are real signal, with evidence and ready-to-approve fixes ([example](skills/alert-tune-up/example-report.md)) | Unbind rules, adjust thresholds (only after you approve, all reversible) |
-| [Site check-up](skills/site-check-up/) | Is a new (or existing) site ready: what would never alert, what isn't marked important, which credentials and backups are missing, with fixes to approve | Bind "went down" rules, set importance (only after you approve, all reversible) |
+| [Site check-up](skills/site-check-up/) | Is a new (or existing) site ready: what would never alert, what isn't marked important, which credentials and backups are missing, with fixes to approve | Bind "went down" rules, set importance, turn the open-port scanner on or off (only after you approve, all reversible) |
 
 More are on the way.
 
@@ -37,11 +37,11 @@ You need a Domotz account and an AI assistant that can use MCP connectors.
 
 **As a plugin:** this repository is a plugin for Claude (`.claude-plugin/plugin.json`) and for
 ChatGPT (`plugin.json`, Agent Plugins format) that bundles both playbooks and the Domotz
-connector. In Claude Code, run it straight from a clone:
+connector. In Claude Code, add this repository as a plugin marketplace and install it:
 
-```bash
-git clone https://github.com/domotz/domotz-plugin
-claude --plugin-dir ./domotz-plugin
+```text
+/plugin marketplace add domotz/domotz-plugin
+/plugin install domotz@domotz
 ```
 
 The playbooks then appear as `/domotz:alert-tune-up` and

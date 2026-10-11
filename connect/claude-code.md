@@ -17,12 +17,12 @@ claude mcp add --transport http domotz https://mcp.domotz.com/mcp
 
 ## 2. Add the playbooks
 
-Load the repository as a plugin. It bundles both playbooks and the Domotz connector, so you can
+Install the repository as a plugin. It bundles both playbooks and the Domotz connector, so you can
 skip step 1 if you sign in when prompted:
 
-```bash
-git clone https://github.com/domotz/domotz-plugin
-claude --plugin-dir ./domotz-plugin
+```text
+/plugin marketplace add domotz/domotz-plugin
+/plugin install domotz@domotz
 ```
 
 Or copy a single playbook folder into your skills directory:
@@ -40,4 +40,5 @@ Run an alert tune-up for my client Acme for the last 14 days.
 ```
 
 Claude Code asks for permission before each tool call unless you allow it. Allow the Domotz
-read tools freely; keep the write tools (`unbind_*`, `bind_*`, `update_alert_rule`) on ask.
+read tools freely; keep the write tools (`bind_*`, `unbind_*`, `update_alert_rule`,
+`update_device_metadata`, `update_collector_settings`) on ask.
