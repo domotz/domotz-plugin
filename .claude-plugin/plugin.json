@@ -1,7 +1,7 @@
 {
   "name": "domotz",
   "displayName": "Domotz",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Network-operations playbooks for MSPs on Domotz: tune noisy alert rules and check that a site is set up the way it should be. Reads your Domotz data, explains what it means, and makes only the reversible changes you approve.",
   "author": {
     "name": "Domotz",
@@ -9,6 +9,11 @@
   },
   "homepage": "https://github.com/domotz/domotz-plugin",
   "repository": "https://github.com/domotz/domotz-plugin",
+  "icon": "./assets/icon.png",
+  "documentationUrl": "https://github.com/domotz/domotz-plugin#readme",
+  "supportUrl": "https://help.domotz.com/",
+  "privacyPolicyUrl": "https://www.domotz.com/privacy-policy.php",
+  "termsOfServiceUrl": "https://www.domotz.com/terms-and-conditions.php",
   "license": "MIT",
   "keywords": [
     "domotz",
