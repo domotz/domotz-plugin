@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "domotz",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Network-operations playbooks for MSPs on Domotz: tune noisy alert rules and check that a site is set up the way it should be. Reads your Domotz data, explains what it means, and makes only the reversible changes you approve.",
   "author": {
     "name": "Domotz",
@@ -21,8 +21,8 @@
     "com.openai": {
       "interface": {
         "displayName": "Domotz",
-        "shortDescription": "Tune noisy alerts and check site setup in your Domotz account",
-        "longDescription": "Network-operations playbooks for MSPs on Domotz: tune noisy alert rules and check that a site is set up the way it should be. Reads your Domotz data, explains what it means, and makes only the reversible changes you approve.",
+        "shortDescription": "Alert tuning and site checks",
+        "longDescription": "Domotz is a network monitoring platform for managed service providers (MSPs) and IT teams. This plugin adds two network-operations playbooks that work on your own Domotz account through the Domotz MCP server.\n\nAlert tune-up reads a client's alert history and tells you which alerts are noise, which rules need a better threshold and which are real signal, with the counts, devices and dates behind each finding.\n\nSite check-up checks one site after it is installed: devices that would never alert, devices not marked important, missing credentials and configuration backups, and gaps compared with a reference site.\n\nBoth end with numbered batches of changes. Nothing changes until you approve a batch, every change is reversible, and the undo is shown before and after.\n\nIntended users: MSP technicians and network administrators with a Domotz account.\n\nLimitations: it acts only within your Domotz permissions and never deletes rules or devices. It cannot change device types, create alert rules or see which notification channel a rule uses; those are listed as actions for you in the Domotz app. It never asks for or handles passwords or other credentials. Large accounts are analysed one client or site at a time. It needs a capable model for the counting the audits require.",
         "developerName": "Domotz",
         "category": "Productivity",
         "capabilities": [
@@ -30,12 +30,15 @@
           "Write"
         ],
         "websiteURL": "https://www.domotz.com",
+        "supportURL": "https://help.domotz.com/",
         "privacyPolicyURL": "https://www.domotz.com/privacy-policy.php",
         "termsOfServiceURL": "https://www.domotz.com/terms-and-conditions.php",
         "defaultPrompt": [
           "Run an alert tune-up for my client Acme for the last 14 days.",
           "Run a site check-up on the collector I installed most recently."
-        ]
+        ],
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/icon.png"
       }
     }
   }

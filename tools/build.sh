@@ -34,6 +34,7 @@ done
 stage="$(mktemp -d)"
 cp "$root/plugin.json" "$root/mcp.json" "$root/README.md" "$root/LICENSE" "$stage/"
 cp -R "$root/skills" "$stage/skills"
+cp -R "$root/assets" "$stage/assets"
 (cd "$stage" && zip -qr "$dist/domotz-plugin.zip" .)
 rm -rf "$stage"
 echo "built dist/domotz-plugin.zip"
