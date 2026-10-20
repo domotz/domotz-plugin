@@ -5,13 +5,13 @@
     "url": "https://www.domotz.com"
   },
   "metadata": {
-    "description": "The Domotz plugin: network-operations playbooks for MSPs, with the Domotz MCP connector."
+    "description": "The Domotz plugin for MSPs and IT teams: network monitoring in your AI assistant, with the Domotz MCP connector and ready-made playbooks."
   },
   "plugins": [
     {
       "name": "domotz",
       "source": "./",
-      "description": "Network-operations playbooks for MSPs on Domotz: tune noisy alert rules and check that a site is set up the way it should be.",
+      "description": "The Domotz plugin for MSPs and IT teams. It connects your AI assistant to Domotz network monitoring, so it can work across your clients' sites with device inventory and status, uptime, alerts and alert rules, network topology, configuration backups and the account's activity log. Ready-made playbooks turn that data into network-operations work. It explains what it finds and makes only the reversible changes you approve.",
       "homepage": "https://github.com/domotz/domotz-plugin"
     }
   ]

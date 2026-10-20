@@ -16,6 +16,7 @@ connect your assistant to the Domotz MCP server, add the playbook, and ask.
 |---|---|---|
 | [Alert tune-up](skills/alert-tune-up/) | Which alerts are noise, which rules need a better threshold, which are real signal, with evidence and ready-to-approve fixes ([example](skills/alert-tune-up/example-report.md)) | Unbind rules, adjust thresholds (only after you approve, all reversible) |
 | [Site check-up](skills/site-check-up/) | Is a new (or existing) site ready: what would never alert, what isn't marked important, which credentials and backups are missing, with fixes to approve | Bind "went down" rules, set importance, turn the open-port scanner on or off (only after you approve, all reversible) |
+| [Health report](skills/health-report/) | The monthly report for a client: availability of their important devices, outages, alerts and the work you did, compared with the month before, as a client-ready page plus a technician appendix ([example](skills/health-report/example-report.md)) | None: read-only |
 
 More are on the way.
 
@@ -36,7 +37,7 @@ You need a Domotz account and an AI assistant that can use MCP connectors.
 ### 2. Install the playbooks
 
 **As a plugin:** this repository is a plugin for Claude (`.claude-plugin/plugin.json`) and for
-ChatGPT (`plugin.json`, Agent Plugins format) that bundles both playbooks and the Domotz
+ChatGPT (`plugin.json`, Agent Plugins format) that bundles the playbooks and the Domotz
 connector. In Claude Code, add this repository as a plugin marketplace and install it:
 
 ```text
@@ -44,8 +45,8 @@ connector. In Claude Code, add this repository as a plugin marketplace and insta
 /plugin install domotz@domotz
 ```
 
-The playbooks then appear as `/domotz:alert-tune-up` and
-`/domotz:site-check-up`, and `/mcp` shows the Domotz connector, which asks you to
+The playbooks then appear as `/domotz:alert-tune-up`, `/domotz:site-check-up` and
+`/domotz:health-report`, and `/mcp` shows the Domotz connector, which asks you to
 sign in to Domotz the first time it is used.
 
 **Claude (web and desktop), one playbook at a time:**

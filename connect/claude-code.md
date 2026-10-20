@@ -17,7 +17,7 @@ claude mcp add --transport http domotz https://mcp.domotz.com/mcp
 
 ## 2. Add the playbooks
 
-Install the repository as a plugin. It bundles both playbooks and the Domotz connector, so you can
+Install the repository as a plugin. It bundles the playbooks and the Domotz connector, so you can
 skip step 1 if you sign in when prompted:
 
 ```text

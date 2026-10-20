@@ -30,6 +30,9 @@ Every playbook moves through the same phases, in order:
 5. **Approve**: numbered batches of changes. Nothing is changed before approval.
 6. **Apply**: record the before-state, apply, verify by reading again, show the undo.
 
+A **report-only** playbook (such as the health report) stops after phase 4: it calls no tool
+that changes anything, and points to the playbook that makes each fix it recommends.
+
 ## Rules for changes
 
 - Read-only until the user approves a batch **by its number**. A general "go ahead" given
