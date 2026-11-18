@@ -1,7 +1,8 @@
 # The playbook contract
 
 Every playbook in `skills/` follows this contract, so users get the same behaviour
-whichever one they run.
+whichever one they run. Know-how skills (`skills/domotz-*`) have their own, shorter contract at
+the end.
 
 ## Shape
 
@@ -62,3 +63,25 @@ A playbook is ready when it has been run on real Domotz data with at least two m
 shows correct counts, recommendations a competent MSP engineer agrees with, no harmful
 recommendation, zero changes made before approval, and an apply → undo round trip that leaves
 the account exactly as it was.
+
+# Know-how skills
+
+`skills/domotz-*` hold Domotz product knowledge, not a procedure: how alerting, discovery,
+collectors, accounts, security and pricing work, and which tools apply. The assistant loads one
+on its own when a question needs it.
+
+- **Source.** They are the plugin's copy of the knowledge skills of the AI assistant inside the
+  Domotz app. Keep the facts in step with that source, but adapt anything that only holds inside
+  the app: links relative to the web app, skills the plugin doesn't ship, statements about "the
+  AI Agent" that would describe the user's own assistant wrongly.
+- **Shape.** `SKILL.md` (self-contained: no extra files) and `README.md`. The frontmatter rules
+  above apply, and the description says what the skill knows and when to load it.
+- **Public.** This repository is public: never include material written for one customer, such as
+  their questionnaire answers, or anything that names a customer.
+- **Changes.** The rules for changes above apply, one change at a time instead of batches: change
+  only after the user approves that exact change, say how to undo it, say before approving when
+  something cannot be undone, and never delete (removing a routed network or an External Host
+  deletes devices and their history, so it is the user's action in the app).
+- **Secrets.** Never pass a password, community or key through the chat or a tool argument: use
+  the Domotz credentials forms, or the app.
+- **Prices.** State only the published starting price; everything else goes to sales.

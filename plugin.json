@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "domotz",
-  "version": "1.6.0",
-  "description": "The Domotz plugin for MSPs and IT teams. It connects your AI assistant to Domotz network monitoring, so it can work across your clients' sites with device inventory and status, uptime, alerts and alert rules, network topology, configuration backups and the account's activity log. Ready-made playbooks turn that data into network-operations work. It explains what it finds and makes only the reversible changes you approve.",
+  "version": "4.0.0",
+  "description": "The Domotz plugin for MSPs and IT teams. It connects your AI assistant to Domotz network monitoring, so it can work across your clients' sites with device inventory and status, uptime, alerts and alert rules, network topology, configuration backups and the account's activity log. Ready-made playbooks turn that data into network-operations work, and built-in Domotz know-how answers how-to questions on alerting, discovery, collectors, accounts, security and pricing. It explains what it finds and changes nothing until you approve.",
   "author": {
     "name": "Domotz",
     "url": "https://www.domotz.com"
@@ -16,23 +16,24 @@
     "network-monitoring",
     "alerts",
     "onboarding",
-    "reporting"
+    "reporting",
+    "knowledge"
   ],
   "extensions": {
     "com.openai": {
       "interface": {
-        "displayName": "Domotz",
-        "shortDescription": "Network monitoring for MSPs",
-        "longDescription": "Domotz is a network monitoring platform for managed service providers (MSPs) and IT teams. It discovers and monitors the devices on every client site, tracks their availability and performance, raises alerts, maps the network, backs up device configurations and gives remote access to the devices it monitors.\n\nThis plugin connects ChatGPT to your own Domotz account through the Domotz MCP server. Ask about any client, site or device in plain language, or run one of the ready-made playbooks for recurring network-operations work, such as tuning noisy alerts, checking that a newly installed site is set up correctly or writing a client's monthly health report. Each playbook shows the evidence behind its findings: counts, devices and dates.\n\nNothing changes in your account until you approve it. Changes are proposed in numbered batches, every change is reversible, and the undo is shown before and after.\n\nIntended users: MSP technicians and network administrators with a Domotz account.\n\nLimitations: it acts only within your Domotz permissions and never deletes rules or devices. Some settings can only be changed in the Domotz app; those are listed as actions for you. It never asks for or handles passwords or other credentials. Large accounts are analysed one client or site at a time. It needs a capable model for the counting the audits require.",
+        "displayName": "Domotz – Network Monitoring",
+        "shortDescription": "Manage networks and devices",
+        "longDescription": "Domotz is a network monitoring platform for managed service providers (MSPs) and IT teams. It discovers and monitors the devices on every client site, tracks their availability and performance, raises alerts, maps the network, backs up device configurations and gives remote access to the devices it monitors.\n\nThis plugin connects ChatGPT to your own Domotz account through the Domotz MCP server. Ask about any client, site or device in plain language, or run one of the ready-made playbooks for recurring network-operations work, such as tuning noisy alerts, checking that a newly installed site is set up correctly or writing a client's monthly health report. Each playbook shows the evidence behind its findings: counts, devices and dates. Built-in Domotz know-how also answers how-to questions: setting up alerts and PSA tickets, finding missing devices, installing and troubleshooting collectors, managing users and permissions, security and compliance facts, and pricing.\n\nNothing changes in your account until you approve it. Playbooks propose changes in numbered batches, with the undo shown before and after; anything that cannot be undone, such as resolving an alert, is said before you approve.\n\nIntended users: MSP technicians and network administrators with a Domotz account.\n\nLimitations: it acts only within your Domotz permissions and never deletes rules or devices. Some settings can only be changed in the Domotz app; those are listed as actions for you. It never asks for or handles passwords or other credentials. Large accounts are analysed one client or site at a time. It needs a capable model for the counting the audits require.",
         "developerName": "Domotz",
-        "category": "Productivity",
+        "category": "Business & Operations",
         "capabilities": [
           "Read",
           "Write"
         ],
         "websiteURL": "https://www.domotz.com",
         "supportURL": "https://help.domotz.com/",
-        "privacyPolicyURL": "https://www.domotz.com/privacy-policy.php",
+        "privacyPolicyURL": "https://www.domotz.com/product-privacy-policy.php",
         "termsOfServiceURL": "https://www.domotz.com/terms-and-conditions.php",
         "defaultPrompt": [
           "Run an alert tune-up for my client Acme for the last 14 days.",

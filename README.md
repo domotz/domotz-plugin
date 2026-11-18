@@ -1,10 +1,10 @@
 # Domotz
 
 The Domotz plugin for Claude and ChatGPT: ready-made playbooks that let your AI assistant do
-real network-operations work in your Domotz account. It reads the data, explains what it
-means, and makes only the changes you approve. The plugin bundles the playbooks and the Domotz
-connector, so once it is listed in your assistant's plugin directory you add it, sign in to
-Domotz, and ask.
+real network-operations work in your Domotz account, and Domotz know-how it uses to answer
+how-to questions. It reads the data, explains what it means, and makes only the changes you
+approve. The plugin bundles the playbooks, the know-how and the Domotz connector, so once it is
+listed in your assistant's plugin directory you add it, sign in to Domotz, and ask.
 
 Works in Claude and ChatGPT; other MCP clients can paste the playbook. Each playbook is a single
 instruction file (an [Agent Skill](https://agentskills.io)). There is no script to run:
@@ -19,6 +19,21 @@ connect your assistant to the Domotz MCP server, add the playbook, and ask.
 | [Health report](skills/health-report/) | The monthly report for a client: availability of their important devices, outages, alerts and the work you did, compared with the month before, as a client-ready page plus a technician appendix ([example](skills/health-report/example-report.md)) | None: read-only |
 
 More are on the way.
+
+## Domotz know-how
+
+Skills your assistant loads on its own when a question needs them. They carry the same facts as
+the AI assistant inside the Domotz app, and work with or without a playbook.
+
+| Skill | What it answers | Changes it can make |
+|---|---|---|
+| [Alerting](skills/domotz-alerting/) | Alert rules, contact channels (Teams, Slack, webhooks), alerts when the internet goes down, snoozing, PSA tickets and IT Glue sync, and why an alert or ticket didn't arrive | Create, update, bind and unbind rules, snooze a collector, map PSA and documentation customers (each after you approve) |
+| [Device discovery](skills/domotz-device-discovery/) | Missing devices (VLANs, subnets, VPNs, cloud), wrong device types, credentials and ports, the network map, configuration backups | Add routed networks and External Hosts, scan settings, device types, importance and monitoring (each after you approve) |
+| [Collector setup](skills/domotz-collector-setup/) | Installing, sizing, activating, troubleshooting, updating, moving and removing collectors | Collector name, location and settings (after you approve) |
+| [Account management](skills/domotz-account-management/) | Users and Access Sets, 2FA and SSO, billing and subscription, API keys, connecting AI clients through MCP | None |
+| [Contact Domotz](skills/domotz-contact-support/) | When and how to reach Domotz support or sales, with a message ready to send | None |
+| [Security and compliance](skills/domotz-security-compliance/) | Certifications, data residency, encryption, access control, privacy, subprocessors, AI and data, vendor questionnaires | None |
+| [Pricing and plans](skills/domotz-pricing-and-plans/) | Per-location and per-device pricing, the free trial, billing terms, the Domotz Box, marketplaces | None |
 
 Playbooks need a frontier model (Claude Sonnet or Opus, or an equivalent). Small fast models
 follow the steps but are not reliable at the counting these audits need.
@@ -46,8 +61,8 @@ connector. In Claude Code, add this repository as a plugin marketplace and insta
 ```
 
 The playbooks then appear as `/domotz:alert-tune-up`, `/domotz:site-check-up` and
-`/domotz:health-report`, and `/mcp` shows the Domotz connector, which asks you to
-sign in to Domotz the first time it is used.
+`/domotz:health-report`, the know-how skills load on their own when a question needs them, and
+`/mcp` shows the Domotz connector, which asks you to sign in to Domotz the first time it is used.
 
 **Claude (web and desktop), one playbook at a time:**
 
@@ -83,7 +98,9 @@ More starter prompts: [prompts.md](skills/alert-tune-up/prompts.md).
   server at `https://mcp.domotz.com/mcp`, signed in as you and limited to your permissions. They
   run inside your AI assistant, so what they read is processed by that assistant's provider
   under your agreement with them.
-- Changes happen only after you approve a numbered batch, and each one is reversible.
+- Changes happen only after you approve them. Playbooks propose numbered batches of reversible
+  changes; the know-how skills ask before each change and say when one cannot be undone (such as
+  resolving an alert). Neither deletes devices, rules, networks or hosts.
 - They never ask for, store or send passwords or other credentials.
 - The optional one-page review is an HTML page your assistant builds from
   `report-template.html`. It loads its fonts from Google Fonts (`fonts.googleapis.com`) and
@@ -93,7 +110,8 @@ More starter prompts: [prompts.md](skills/alert-tune-up/prompts.md).
 
 ## How playbooks behave
 
-Every playbook follows the same rules ([CONTRIBUTING.md](CONTRIBUTING.md)):
+Every playbook follows the same rules ([CONTRIBUTING.md](CONTRIBUTING.md)); the know-how skills
+ask before each change instead of in batches, and say when one cannot be undone:
 
 - **Read first, change later.** Nothing changes in your account until you approve a
   numbered batch of changes.

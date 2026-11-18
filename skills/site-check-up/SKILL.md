@@ -25,8 +25,9 @@ this conversation.
    never power-cycle or reboot anything; never snooze; never change a rule's notification channels.
 3. **Never handle secrets.** Do not ask for, accept, repeat or send passwords, SNMP communities or
    keys, and never call a tool that takes a secret as an argument (such as
-   `set_collector_default_snmp_credentials`). The only exception is a form the user fills in
-   themselves (`get_snmp_credentials_form`, see Step 4), where you never see the values.
+   `set_collector_default_snmp_credentials`). The only exceptions are the forms and the one-time
+   link the user fills in themselves (`get_snmp_credentials_form`, `get_device_credentials_form`,
+   `get_credentials_link`, see Step 4), where you never see the values.
 4. **One site at a time.** A check-up covers one collector. Never mix two organizations in a batch.
 5. **Say what you covered.** If you skipped devices or could not read something, say exactly what.
    Write exact counts from the data you read; never "~", "about" or "90+". If you only sampled,
@@ -40,6 +41,8 @@ this conversation.
   user named a site or collector, use it. If they said "the new site" or "the one I just
   installed", take the most recently created collector (`sort_by: creation_time`) and say which.
   If it is still ambiguous, ask once which collector, listing the candidates.
+- If the collector is OFFLINE, say so and stop: the check needs it online. Offer to help bring it
+  back instead (power, network, the firewall hosts it needs).
 - State the scope in one line: client, collector name [id], when it was installed, device count.
 - Note the collector's `monitoring_mode` (`search_collectors` with `view: detailed`): "Location
   Mode" bills per site, any other mode bills per monitored device. It decides check 9.
@@ -57,8 +60,9 @@ are important is each MSP's own standard. Pick the baseline once and say which o
 
 ## Step 2 — Fetch
 
-Do these calls, in this order (about 15 calls plus one per key device; stay under 45, or 55 with a
-reference site). Make the
+Do these calls, in this order: about 15 fixed calls, plus **at most 30 per-device calls in all**
+(20 with a reference site), shared by item 5's fallback, item 10 and check 9 in that order, so the
+whole check stays under 45 calls (55 with a reference site). Make the
 per-device calls one at a time, not in parallel; if one fails, retry it once, and report any device
 you still could not read as "not verified" rather than guessing:
 
@@ -69,18 +73,25 @@ you still could not read as "not verified" rather than guessing:
 3. `get_network_configuration` — discovery flags, attached interfaces, routed networks, external
    hosts.
 4. `search_devices` with `filter_by: {collector_ids: [<id>]}`, `view: detailed`, `page_size: 100`
-   (page on if more) — name, type, vendor, model, importance, status, monitoring state, and
-   `has_shared_alerts` (the device has classic shared alerts, see below).
+   (page on if more) — name, type, vendor, model, importance, status, `monitoring_state`, and
+   `has_shared_alerts` (the device has classic shared alerts, see below). A device whose
+   `monitoring_state` is `unmanaged` is not monitored: it has no status history and never alerts.
+   Don't filter on `monitoring_state`: read it from each device.
 5. `get_collector_credential_coverage` — per device: which integrations work (UNLOCKED) or not
-   (LOCKED), SNMP reading status.
+   (LOCKED), SNMP reading status. It lists every discovered device: if `collector_overview` counts
+   more than 300 devices, skip it and read `device_inventory` for up to 10 key infrastructure
+   devices instead: its `protocol_coverage` gives their SNMP status. Configuration backup still
+   comes from item 6; the ONVIF and configuration-management locks of check 3 are then "not
+   verified" for the devices you didn't read.
 6. `get_config_backup_status` — devices with a backup driver, and whether backup is ENABLED.
-7. `network_topology` with `view: full`, `max_links: 300` — links and the dependency map.
+7. `network_topology` with `view: full`, `max_links: 300` — the links (edges) between devices.
 8. `list_alert_rules` — the account's rules (id, name, metric, condition, severity,
    `linked_entities`). If it answers that the Alert Rules feature is not enabled, skip items 9
    and 10 (see "Which alerting the account uses").
 9. `get_collector_alert_rule_bindings` — rules on the collector itself.
-10. `get_device_alert_rule_bindings` for every **key device** (Step 3): all infrastructure first,
-    then business-critical endpoints, up to 30 devices in total (20 with a reference site). Say which ones you skipped.
+10. `get_device_alert_rule_bindings` for every monitored **key device** (Step 3; skip the ones
+    whose `monitoring_state` is `unmanaged`): all infrastructure first, then business-critical
+    endpoints, within the per-device budget. Say which ones you skipped.
 
 **Is the site settled?** If `initialDiscovery.inProgress` is true, or the collector was created
 less than 30 minutes ago, say so: discovery, device types and topology are still settling, and
@@ -94,7 +105,8 @@ one of them:
   Accounts created since May 2026 have only these.
 - **Classic alerts**, on older accounts: shared alerts and personal alerts, which can be active at
   the same time as alert rules. The tools show only whether a device has shared alerts
-  (`has_shared_alerts`, and `event_profile_count` in `get_device_alerts`), not which events they
+  (`has_shared_alerts`, and `event_profile_count` in the `alerts` block of `device_inventory`),
+  not which events they
   cover. Personal alerts and classic collector alerts are not visible at all.
 
 So:
@@ -143,8 +155,9 @@ down, it has no alerting standard to copy: say so, and use general practice for 
 - **business-critical endpoints:** cameras and door/access controllers. These are proposed
   separately, because whether they matter is the MSP's call.
 
-Use the topology **edges** to see what depends on what: an edge from a switch (`source_id`) to a
-device (`target_id`) means the device is plugged into that switch, so count the devices behind each
+Use the topology **edges** to see what depends on what, but only edges with `link_type: MANUAL`
+(links the user drew, which override the others) or `link_type: DISCOVERED` with `is_fresh: true`:
+ARP-inferred and stale links can point the wrong way. An edge from a switch (`source_id`) to a device (`target_id`) means the device is plugged into that switch, so count the devices behind each
 switch, and follow switch-to-switch edges from the switch the gateway or firewall is on. Don't rely
 on `dependency_map` alone: switches linked to each other appear under each other there, which looks
 like a cycle but is just the two ends of one uplink. A switch that many devices depend on is key;
@@ -158,7 +171,8 @@ question (Q…).
 
 1. **Alerting coverage.** Is there a "collector went down" rule bound to the collector (a rule on
    `agent_status` with condition "went down")? Does every key device have a "device went down"
-   rule (`device_status`, "went down") bound? Count: "<n> of <m> key devices alert when down".
+   rule (`device_status`, "went down") bound? Count: "<n> of <m> key devices alert when down",
+   over the monitored key devices only (check 2 handles the unmonitored ones).
    This gap is common: on established Domotz sites about half of the infrastructure has no
    per-device down alert. Report it as a gap to close, not as a mistake.
    - Gap → propose binding an **existing** rule (B…): for the collector, the `agent_status` rule
@@ -168,8 +182,12 @@ question (Q…).
    - If two rules already watch the same thing on one device or on the collector, report it as
      duplicate alerting (it will alert twice) and suggest the user runs an alert tune-up.
    - No suitable rule exists in the account → T…: "create a 'went down' rule in the Domotz app and
-     choose who it notifies" (you cannot see notification channels, so never create rules).
-2. **Importance.** With a reference site, follow its standard. Otherwise, general practice: key
+     choose who it notifies" (this check never creates rules: who gets notified is the MSP's
+     choice).
+2. **Importance and monitoring.** When the collector is not in "Location Mode", key devices whose
+   `monitoring_state` is `unmanaged` get no status, alerts or history → T…: "turn on monitoring
+   for <names> in the app" (each monitored device is billed); a binding on them would never fire,
+   so propose none. Then importance: with a reference site, follow its standard. Otherwise, general practice: key
    infrastructure should be marked important; endpoints that come and go (workstations, laptops,
    mobile phones and tablets, guest devices) should not. Desk VoIP phones, printers and displays are
    the MSP's call: leave their importance as it is unless asked. Describe what you found ("the
@@ -187,23 +205,33 @@ question (Q…).
    - `default_snmp_credentials.is_platform_default: true` → T…: the collector reads SNMP with the
      platform's default community; set the client's own (preferably SNMPv3) in the Domotz app
      (never through the chat);
-   - any other credential (SSH, ONVIF, OS, device management) can only be added in the Domotz app.
+   - any other credential (SSH, ONVIF, OS, device management): offer the device credentials form
+     (`get_device_credentials_form`, after `get_device_credentials` for its `devicePurposes`) or,
+     if the form doesn't appear in this chat, a one-time link the user opens to type them
+     (`get_credentials_link`). The user types them; you never see them.
 4. **Remote access.** A collector issue naming a host it cannot reach for "Remote Connection" →
    T…: allow the collector outbound access to that host, or remote connections will not work.
 5. **Identification.** Key devices typed Generic or with an implausible type for their
    vendor/model (a hypervisor typed Desktop, a workstation typed Mobile, a UPS typed Smart Power
-   Plug) → T…: correct the type in the Domotz app. Device types cannot be changed through the
-   Domotz MCP today, so say that once. Group them. On a site younger than an hour, mark this check
+   Plug) → T…: correct the type in the Domotz app. This check doesn't change device types; say
+   the user can ask for it after the check. Group them. On a site younger than an hour, mark this check
    "preview".
 6. **Discovery scope.** Report the subnets scanned and the routed networks. If there is only the
    collector's own subnet, ask (Q…) whether the site has other VLANs or subnets (servers,
-   cameras, VoIP, guest) that should be added as routed networks. Never assume they exist.
-7. **Collector health.** Version, uptime since install, status. TCP open-port scanner off → offer
+   cameras, VoIP, guest). Never assume they exist. A VLAN needs an interface for it on the
+   collector's host, never a routed network (without MAC addresses Domotz can't identify the
+   devices or map them); only a subnet behind a router or a VPN is a routed network.
+7. **Collector health.** Version, uptime since install, status. A collector whose
+   `health_status` (`search_collectors`) is ISSUES is not Ready: name the host it cannot reach.
+   TCP open-port scanner off → offer
    it as an optional change (B…) that scans the site's public IP for open ports.
-8. **Single points of failure.** From the dependency map, name the switches that the most key
-   devices depend on, with the count. Information, no change.
-9. **Older sites only** (collector older than 30 days): devices down for more than 30 days and
-   duplicate records (many records on one IP with locally administered MACs).
+8. **Single points of failure.** From the fresh discovered edges, name the switches that the most
+   key devices depend on, with the count. Information, no change. If no such edges remain, write
+   "Not verified: the network map is out of date".
+9. **Older sites only** (collector older than 30 days): monitored devices offline now (item 4);
+   read `last_status_change` with `device_inventory` for up to 10 of them, one at a time, within
+   the per-device budget, and those
+   offline for more than 30 days are stale. Also duplicate records (many records on one IP with locally administered MACs).
    - **Per-device mode** (`monitoring_mode` other than "Location Mode"): each monitored device is
      billed, so report them as T…: "stop monitoring <n> devices in the app to free <n> device
      slots" and list them in the evidence.
@@ -224,7 +252,7 @@ exactly this layout:
 | Area | Status | What we found |
 |---|---|---|
 | Alerting | Needs work | <e.g. 0 of 15 key devices alert when down; no collector-down alert> |
-| Importance | … | … |
+| Importance & monitoring | … | … |
 | Credentials & backups | … | … |
 | Remote access | … | … |
 | Identification | … | … |

@@ -14,7 +14,7 @@ Brightwater Logistics · collector [325688] · installed 1 Oct 2026, 22:51 UTC �
 | Area | Status | What we found |
 |---|---|---|
 | Alerting | Needs work | 0 of 14 key infrastructure devices alert when down; 0 of 8 critical endpoints; no collector-down alert |
-| Importance | Needs work | Gateway router, warehouse AP and DNS server not marked important |
+| Importance & monitoring | Needs work | Gateway router, warehouse AP and DNS server not marked important |
 | Credentials & backups | Your action | 3 switches can back up config but have no SSH credentials; 4 cameras lack ONVIF; platform-default SNMP |
 | Remote access | Your action | Collector cannot reach sshg.domotz.co, so remote connections will fail |
 | Identification | Your action | Hypervisor typed Desktop, UPS typed Smart Power Plug, gateway and door controller typed Generic |

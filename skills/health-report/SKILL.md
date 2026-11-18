@@ -21,8 +21,8 @@ conversation.
 2. **One client at a time.** A report covers one organization (all its collectors) or one
    collector. Never mix two organizations in one report.
 3. **Only numbers you read.** Write exact numbers from tool results; never "~", "about" or
-   "90+". Percentages come from the server (`uptime` in `get_uptime` or `collector_overview`);
-   don't compute availability yourself. If you could not read something, say what in the
+   "90+". Percentages come from the server (`uptime_percentage` in `get_collector_metrics` and
+   `get_device_metrics`); don't compute availability yourself. If you could not read something, say what in the
    appendix, and never fill the gap with a guess.
 4. **Never mislead the client.** A number goes on the client page only if it is complete for the
    period. Anything partial goes in the appendix, labelled partial. A month that cannot be
@@ -62,31 +62,35 @@ mark that item "not read" in the appendix.
 
 **Tool budget.** Chat apps such as claude.ai stop a turn after about 40 tool calls, and the report
 is only useful if it is finished in one turn. Plan for **at most 35 calls**, in this order: the
-fixed calls first (items 1–3 and 5–9, about 20 for two collectors), then device availability
-(item 4) with what is left, at most 15 devices. If you are stopped anyway, write the report with
+fixed calls first (items 1–3 and 5–9, about 22 for two collectors), then device availability
+(item 4) with what is left, at most 15 devices (fewer with more collectors, see item 4). If you are stopped anyway, write the report with
 what you have, say what is left, and that the user can reply "continue".
 
-Large results: `collector_overview` and `get_uptime` list every downtime interval, and a collector
-that flapped can return hundreds. Don't copy intervals into your reply. As you read each result,
-keep only: the `uptime` percentage, the number of intervals, the total and the longest duration,
-the 3 longest intervals (start and duration), and the days with the most intervals. Count the
-intervals exactly up to 60; above that, write "more than 60" and name the days they fall on.
+Availability results: `get_collector_metrics` and `get_device_metrics` (`metric_names:
+["uptime"]`) return `uptime_percentage` for the exact window, `downtime_count` and
+`total_downtime_seconds` (every interruption), and `downtimes`, which lists the 10 longest only.
+`collector_overview` lists every interval since `lookback` days ago, and a collector that flapped
+can return hundreds. Don't copy intervals into your reply: keep the counts, the longest and the
+days with the most intervals.
 
 **Per collector** (for each collector in scope):
-1. `collector_overview` with `lookback` = the number of days from the period start to now (at
-   most 90). Keep the status, version, creation time, `counters`, `security_issues`,
-   `speed_test` and its thresholds, `default_snmp_credentials.is_platform_default` and
-   `alerts_snoozed`. When the period ends now (the default), its uptime is the collector's uptime
-   for the period.
-2. `get_uptime` (collector only, no device) for the **comparison period**, and also for the
-   period when it doesn't end now. Use the server's `uptime`.
+1. `collector_overview` with `lookback` = the number of days from the period start to now, at
+   most 31 (above that it returns no uptime, version or settings, without an error). Keep the
+   status, version, creation time, `counters`, `security_issues`, `speed_test` and its
+   thresholds, `default_snmp_credentials.is_platform_default` and `alerts_snoozed`, and from its
+   `downtime_intervals` only those that start inside the period: the days with the most of them.
+2. `get_collector_metrics` with `metric_names: ["uptime"]` and `from_`/`to` = the **period**, then
+   again for the **comparison period**. This is the collector's uptime: `uptime_percentage`,
+   `downtime_count` and the longest of `downtimes`. It works for windows that start more than 31
+   days ago; `get_device_metrics` does not (it fails, often with a misleading "device is
+   unmanaged" message), so the comparison never has device availability.
 
 **Important devices** (the equipment the client cares about):
 3. `search_devices` with `filter_by: {collector_ids: [<all in scope>], importance: "important"}`,
    `view: detailed`, `page_size: 100`. Keep name, type, vendor, model, status, `monitoring_state`
    and `has_shared_alerts`. Devices whose `monitoring_state` is `unmanaged` are not monitored and
    have no uptime history: count them as "important but not monitored" for the appendix and the
-   next steps, and don't call `get_uptime` for them. Any other value has uptime.
+   next steps, and don't read their uptime. Any other value has uptime.
 
 **Alerts:**
 5. `list_alert_rules` once. If it says the Alert Rules feature is not enabled, the account uses
@@ -135,8 +139,9 @@ intervals exactly up to 60; above that, write "more than 60" and name the days t
    otherwise write "no comparison".
 
 **Device availability** (last, with the budget left):
-4. `get_uptime` with `device_id` for monitored important devices, for the **period**: 15 devices
-   (8 when the scope has 4 or more collectors), or all of them if there are fewer. Use that
+4. `get_device_metrics` with `device_id`, `collector_id`, `metric_names: ["uptime"]`, `from_` and
+   `to` = the **period**, for monitored important devices: 15 devices
+   with one collector, 12 with two or three, 8 with four or more, or all of them if there are fewer. Use that
    budget in full; checking fewer makes the headline figure weaker for no reason. Pick them in this order, so the devices that had
    problems are never the ones skipped:
    1. important devices that are offline now (`status` from item 3);
@@ -145,17 +150,19 @@ intervals exactly up to 60; above that, write "more than 60" and name the days t
    4. the rest, by name.
    The devices you don't read count as "<n> other important devices, online now, not checked one
    by one" (from their `status`), never as 99.9% or better. Say in the appendix which you skipped.
-   - `uptime` 0 for the whole period means the device was off all month. Report it as "offline
+   Keep `uptime_percentage`, `downtime_count` (every interruption), `total_downtime_seconds`,
+   `agent_uptime`, and the `downtimes` list, which holds the longest interruptions only.
+   - `uptime_percentage` 0 for the whole period means the device was off all month. Report it as "offline
      all period" (probably retired or unplugged), not as an outage.
    - The device's `agent_uptime` is how much of the period its collector was online. When the
      collector was offline, the device's state is unknown; say so if `agent_uptime` is below 99%.
-   - Check the percentage against the intervals: 1% of 30 days is about 7 hours. If the
-     percentage implies at least twice the downtime the intervals add up to (for example 95.5%,
-     about 32 hours, with intervals totalling 40 minutes), the figure is unreliable. Report that
+   - Check the percentage against `total_downtime_seconds`: 1% of 30 days is about 7 hours. If
+     the percentage implies at least twice that downtime (for example 95.5%, about 32 hours, with
+     a total downtime of 40 minutes), the figure is unreliable. Report that
      device's outages and longest outage, write "under review" instead of its availability, leave
      it out of the headline figures, and note it in the appendix ("Domotz reports 95.49% but its
      outages add up to 40 min").
-   - An answer `DEVICE_NOT_MANAGED` for a device that `search_devices` shows as monitored
+   - An answer `device_not_managed` for a device that `search_devices` shows as monitored
      usually means the period starts more than 31 days ago. Don't retry it device by device:
      treat device availability as not readable for this period and say so.
 
@@ -171,9 +178,13 @@ or the comparison period (`creation_time`), alert history doesn't cover the whol
 
 Work these out, in this order:
 
-1. **Availability.** For each important monitored device you read: its uptime, the number of
-   downtime intervals, the longest. An **outage** is an interval of 5 minutes or more; shorter
-   ones are **blips**. The headline availability figure is "<k> of <n> important devices at
+1. **Availability.** For each important monitored device you read: its uptime, its outages, the
+   longest. An **outage** is an interruption of 5 minutes or more; shorter ones are **blips**.
+   Count the outages in `downtimes`. When `downtime_count` is larger than the number of entries
+   listed, the missing ones are shorter than the shortest listed: the count is exact when that
+   shortest entry is under 5 minutes; otherwise write "at least <n>", in the device's row and in
+   the outages total ("at least <sum>"). A lower bound is not a guess: it may go on the client
+   part. The headline availability figure is "<k> of <n> important devices at
    99.9% or better", with the lowest device named. Devices offline all period are left out of
    <n> and listed separately.
    **Outages during a monitoring outage don't count.** While a collector is offline or flapping,
@@ -183,8 +194,9 @@ Work these out, in this order:
    offline 9 h 47 min on 4 Oct, during the monitoring outage at Main; not confirmed"). Keep the
    device's availability figure, and add "includes time the monitoring connection was down"
    when its `agent_uptime` is below 99%.
-2. **Site connectivity.** Each collector's uptime for the period and the comparison. If a
-   collector has 20 or more intervals in the period, or more than 5 on one day, call it
+2. **Site connectivity.** Each collector's uptime for the period and the comparison
+   (`get_collector_metrics`). If a collector has a `downtime_count` of 20 or more in the period,
+   or more than 5 intervals on one day (from item 1), call it
    **flapping** and name the days. A collector going offline means monitoring stopped, not that
    the client's network was down: on the client page call it "monitoring connection", and only
    call it an outage if important devices on that site also went down at the same time.

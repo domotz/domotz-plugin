@@ -35,6 +35,8 @@ stage="$(mktemp -d)"
 cp "$root/plugin.json" "$root/mcp.json" "$root/README.md" "$root/LICENSE" "$stage/"
 cp -R "$root/skills" "$stage/skills"
 cp -R "$root/assets" "$stage/assets"
+# ChatGPT updates the already-published Domotz app, whose package name is its app id.
+sed 's/"name": "domotz"/"name": "app-6a062a8cb7a4819184437cdd33b8aad4"/' "$root/plugin.json" > "$stage/plugin.json"
 (cd "$stage" && zip -qr "$dist/domotz-plugin.zip" .)
 rm -rf "$stage"
 echo "built dist/domotz-plugin.zip"
