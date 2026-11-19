@@ -22,7 +22,7 @@ The report fits on one screen: how many alerts the changes would have saved, a t
 with the reason and key number for each, and what to leave alone
 ([example](example-report.md)). Where the playbook is installed as a skill and your chat can
 show HTML pages (such as Claude artifacts), it also shows the report as a one-page review for
-your team, built from [`report-template.html`](report-template.html). Say "text only" to skip it.
+your team, built from [`report-template.md`](report-template.md). Say "text only" to skip it.
 
 ## What it changes
 

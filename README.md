@@ -102,8 +102,8 @@ More starter prompts: [prompts.md](skills/alert-tune-up/prompts.md).
   changes; the know-how skills ask before each change and say when one cannot be undone (such as
   resolving an alert). Neither deletes devices, rules, networks or hosts.
 - They never ask for, store or send passwords or other credentials.
-- The optional one-page review is an HTML page your assistant builds from
-  `report-template.html`. It loads its fonts from Google Fonts (`fonts.googleapis.com`) and
+- The optional one-page review is an HTML page your assistant builds from the template in
+  `report-template.md`. It loads its fonts from Google Fonts (`fonts.googleapis.com`) and
   sends nothing anywhere.
 - The plugin has no scripts, hooks or other servers, and nothing in this repository receives
   your data.

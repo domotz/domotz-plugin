@@ -1,0 +1,84 @@
+# Builds the release zips and attaches them to the GitHub release of the pushed tag:
+# - one zip per skill, for claude.ai and ChatGPT (Skills → Add): one folder named after the
+#   skill, with SKILL.md and the template it reads at its root;
+# - domotz-plugin.zip, for the ChatGPT plugin ("Create draft from ZIP"): Agent Plugins format,
+#   plugin.json and mcp.json at the root, with the published app's id as the package name.
+# Run it by hand (Actions → Release → Run workflow) to get the zips as a build artifact only.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the tag matches the plugin version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          for f in plugin.json .claude-plugin/plugin.json; do
+            v="$(jq -r .version "$f")"
+            if [ "v$v" != "$GITHUB_REF_NAME" ]; then
+              echo "::error::$f has version $v, tag is $GITHUB_REF_NAME"
+              exit 1
+            fi
+          done
+
+      - name: Build the skill zips
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          for dir in skills/*/; do
+            name="$(basename "$dir")"
+            skill="$dir/SKILL.md"
+            [ -f "$skill" ] || continue
+            declared="$(sed -n 's/^name: *//p' "$skill" | head -1)"
+            if [ "$declared" != "$name" ]; then
+              echo "::error::$skill declares name '$declared', folder is '$name'"
+              exit 1
+            fi
+            stage="$(mktemp -d)"
+            mkdir -p "$stage/$name"
+            cp "$skill" "$stage/$name/SKILL.md"
+            # The template the skill reads; docs and examples stay out of the zip.
+            if [ -f "$dir/report-template.md" ]; then
+              cp "$dir/report-template.md" "$stage/$name/"
+            fi
+            (cd "$stage" && zip -qr "$GITHUB_WORKSPACE/dist/$name.zip" "$name")
+            echo "built dist/$name.zip"
+          done
+
+      - name: Build the ChatGPT plugin zip
+        run: |
+          set -euo pipefail
+          stage="$(mktemp -d)"
+          cp mcp.json README.md LICENSE "$stage/"
+          cp -R skills assets "$stage/"
+          # ChatGPT updates the already-published Domotz app, whose package name is its app id.
+          jq '.name = "app-6a062a8cb7a4819184437cdd33b8aad4"' plugin.json > "$stage/plugin.json"
+          (cd "$stage" && zip -qr "$GITHUB_WORKSPACE/dist/domotz-plugin.zip" .)
+          echo "built dist/domotz-plugin.zip"
+          ls -l dist
+
+      - name: Keep the zips as a build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-zips
+          path: dist/*.zip
+
+      - name: Attach the zips to the release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --generate-notes
+          fi
+          gh release upload "$GITHUB_REF_NAME" dist/*.zip --clobber

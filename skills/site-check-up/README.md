@@ -23,7 +23,7 @@ This playbook checks one site (one collector) across eight areas and tells you, 
 It ends with numbered changes to approve, actions only you can do in the Domotz app, and
 questions only you can answer. Where your chat can show HTML pages (such as Claude artifacts), it also shows
 the result as a one-page review for your team, built from
-[`report-template.html`](report-template.html). Say "text only" to skip it.
+[`report-template.md`](report-template.md). Say "text only" to skip it.
 
 ## Your standard, not ours
 

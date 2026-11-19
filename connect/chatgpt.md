@@ -19,7 +19,7 @@ Needs a ChatGPT plan that supports custom plugins (MCP connectors) and skills.
 **Updating to a new version:** uploading a zip with the same name does not replace the skill you
 already have. Open the skill with **⋯ → Edit** instead: replace the text below the name and
 description with the new `SKILL.md` (everything after its `---` header), upload the new
-`report-template.html` and remove the old one, then **Save changes**.
+`report-template.md` and remove the old `report-template.html` or `.md`, then **Save changes**.
 
 ## 3. Ask
 

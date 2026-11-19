@@ -43,8 +43,8 @@ Reply **"approve B1 B3"**, **"approve all"**, or **"why B2?"** for the evidence.
 ## The one-page review
 
 Where the chat can show an HTML page (such as Claude artifacts), the assistant fills
-[`report-template.html`](report-template.html) with the same numbers. Open the file in a browser
-to see it with this example's data.
+the HTML page in [`report-template.md`](report-template.md) with the same numbers. To see it
+with this example's data, save its code block as an `.html` file and open it in a browser.
 
 ## "why B2?"
 

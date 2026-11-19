@@ -1,7 +1,7 @@
 {
   "name": "domotz",
   "displayName": "Domotz",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "The Domotz plugin for MSPs and IT teams. It connects your AI assistant to Domotz network monitoring, so it can work across your clients' sites with device inventory and status, uptime, alerts and alert rules, network topology, configuration backups and the account's activity log. Ready-made playbooks turn that data into network-operations work, and built-in Domotz know-how answers how-to questions on alerting, discovery, collectors, accounts, security and pricing. It explains what it finds and changes nothing until you approve.",
   "author": {
     "name": "Domotz",

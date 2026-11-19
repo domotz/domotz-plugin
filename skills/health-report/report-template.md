@@ -1,3 +1,10 @@
+# Health report — client page template
+
+The assistant copies the HTML in the code block below, unchanged except for the JSON in the
+`<script id="report">` element, and publishes it as an HTML artifact. The JSON shown is sample
+data. To preview the page, save the code block as an `.html` file and open it in a browser.
+
+```html
 <!doctype html>
 <html lang="en">
 <head>
@@ -309,3 +316,4 @@ footer { margin-top: 28px; font: 400 12px/1.5 var(--mono); color: var(--muted); 
 </script>
 </body>
 </html>
+```

@@ -23,7 +23,7 @@ last 30 days, compared with the 30 days before:
 The first part is written for the client in plain language; a technician appendix underneath
 carries collector details, monitoring gaps and what the report did not cover. Where your chat can
 show HTML pages (such as Claude artifacts), it also builds a client-ready page from
-[`report-template.html`](report-template.html). Say "text for the client" for a version to paste
+[`report-template.md`](report-template.md). Say "text for the client" for a version to paste
 into an email.
 
 ## What it changes

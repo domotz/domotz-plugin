@@ -7,11 +7,17 @@ the end.
 ## Shape
 
 - One folder per playbook: `skills/<name>/`. The repository root is a Claude plugin
-  (`.claude-plugin/plugin.json`, `.mcp.json`); raise `version` in `plugin.json` with every release.
+  (`.claude-plugin/plugin.json`, `.mcp.json`); raise `version` in both `plugin.json` files with
+  every release, then push a `v<version>` tag: the Release workflow builds the zips and attaches
+  them to the GitHub release.
+- Only Markdown, text, JSON, YAML and PNG/JPEG images go in the repository. The Claude plugin
+  directory refuses any other file (HTML, scripts, files starting with `#!`) from organizations
+  it has not verified, so an HTML template ships as `report-template.md`, with the HTML in one
+  code block, and the build lives in `.github/workflows/release.yml`.
 - `SKILL.md` is the playbook. It must be **self-contained**: a user can paste it into a chat
   (any client without skill support) and it still works. No scripts, no code execution, and no
-  other file it depends on. An optional extra, such as an HTML report template, may sit next to
-  it if the playbook works without it.
+  other file it depends on. An optional extra, such as the report template (`report-template.md`), may sit next
+  to it if the playbook works without it.
 - `README.md`: what it does, for a human deciding whether to use it.
 - `prompts.md`: starter prompts and useful follow-ups.
 - `example-report.md`: what a report looks like.

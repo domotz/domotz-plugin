@@ -294,13 +294,14 @@ Rules for the layout:
 
 ### Visual report (shown by default)
 
-If this skill's folder contains `report-template.html` **and** you can create an HTML artifact or
+If this skill's folder contains `report-template.md` **and** you can create an HTML artifact or
 canvas in this chat, build the one-page review **in the same reply, right after the markdown
 report**, without asking. Skip it only if the user asked for text only. It is the easiest way to
 read the findings and to share them with the team.
 
 1. Write the markdown report first, so it is there even if the page fails.
-2. Read `report-template.html`. Copy it **unchanged** except for the JSON data block — the
+2. Read `report-template.md` and take the HTML inside its code block (not the
+   lines above it). Copy that HTML **unchanged** except for the JSON data block — the
    script element with `id="checkup"`, right after the opening comment. Replace only the JSON
    between that element's opening tag and its `</script>` with this check-up's findings — the same
    facts and wording as the markdown report, nothing new. The field names are in the template's sample
